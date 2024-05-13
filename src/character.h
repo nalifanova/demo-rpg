@@ -34,10 +34,7 @@ public:
     }
     virtual ~Character() = default;
 
-    virtual stattype get_luck() {return 0u;}
-    virtual stattype get_resistance() {return 0u;}
-
-    bool set_max_hp(const hptype new_max_hp)
+    bool set_initial_hp(const hptype new_max_hp)
     {
         if (new_max_hp < 1)
             return false;
@@ -88,6 +85,13 @@ public:
             return;
         }
         m_current_hp += hit_points;
+    }
+
+protected:
+    void increase_stats(const stattype strength, const stattype intellect)
+    {
+        m_strength += strength;
+        m_intellect += intellect;
     }
 
 public:

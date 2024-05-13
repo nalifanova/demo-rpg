@@ -12,4 +12,5 @@ add_executable(demo_rpg
         src/wizard.h
         src/cleric.h
         src/rogue.h
+        src/level_system.h
 )
