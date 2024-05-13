@@ -18,12 +18,9 @@ public:
     static constexpr stattype intellect_growth = 2u;
 
 
-    Cleric(): Character(
-        base_hp,
-        base_hp,
-        base_str,
-        base_int
-    ), StatBlock(base_luck, 10)
+    Cleric():
+    Character(base_hp, base_str, base_int),
+    StatBlock(base_luck, 10)
     {
         name = __func__;
     }

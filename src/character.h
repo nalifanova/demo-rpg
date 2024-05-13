@@ -1,5 +1,5 @@
-#ifndef HP_H
-#define HP_H
+#ifndef CHARACTER_H
+#define CHARACTER_H
 
 #include "stat_types.h"
 
@@ -17,16 +17,13 @@ public:
     }
 
     Character(
-        const hptype current_hp,
         const hptype initial_hp,
         const stattype strength,
         const stattype intellect
     )
     {
-        m_current_hp = current_hp;
+        m_current_hp = initial_hp;
         m_initial_hp = initial_hp;
-        if (m_current_hp > m_initial_hp)
-            m_current_hp = m_initial_hp;
         m_strength = strength;
         m_intellect = intellect;
 
@@ -104,4 +101,4 @@ private:
     stattype m_intellect;
 };
 
-#endif //HP_H
+#endif //CHARACTER_H
