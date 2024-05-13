@@ -1,10 +1,18 @@
 # Demo RPG (with proper attention to the learning process)
 
-[https://img.shields.io/badge/C++-20-green.svg?style=flat&logo=c%2B%2B](https://en.cppreference.com/w/cpp/compiler_support/20)
+<div align="center">
+  
+[![RPG](https://img.shields.io/badge/RPG-Demo-yellow.svg?logo=data:image/svg%2bxml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZlcnNpb249IjEiIHdpZHRoPSI2MDAiIGhlaWdodD0iNjAwIj48cGF0aCBkPSJNMTI5IDExMWMtNTUgNC05MyA2Ni05MyA3OEwwIDM5OGMtMiA3MCAzNiA5MiA2OSA5MWgxYzc5IDAgODctNTcgMTMwLTEyOGgyMDFjNDMgNzEgNTAgMTI4IDEyOSAxMjhoMWMzMyAxIDcxLTIxIDY5LTkxbC0zNi0yMDljMC0xMi00MC03OC05OC03OGgtMTBjLTYzIDAtOTIgMzUtOTIgNDJIMjM2YzAtNy0yOS00Mi05Mi00MmgtMTV6IiBmaWxsPSIjZmZmIi8+PC9zdmc+)]()
+[![C++ - Version](https://img.shields.io/badge/C++-20-blue.svg?style=flat&logo=c%2B%2B)](https://en.cppreference.com/w/cpp/compiler_support/20)
+![GitHub last commit](https://img.shields.io/github/last-commit/nalifanova/demo-rpg?display_timestamp=author&style=flat&logo=github)
+
+
+</div>
+
 
 ## About
 This is a project based on [C++ RPG Code Along](https://www.youtube.com/playlist?list=PLalVdRk2RC6pqOVxRNj5Uui7FN4r-WorM)
-video on YouTube. The project code can be found over here:
+video on YouTube. The project code can be found here:
 [codetechandtutorials/demo_rpg](https://github.com/codetechandtutorials/demo_rpg/releases/tag/ep3)
 
 Personally, it's a learning C++ and GameDev process, thus changes from the `main line` will be obviously implemented. :D
