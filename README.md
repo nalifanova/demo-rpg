@@ -1,5 +1,7 @@
 # Demo RPG (with proper attention to the learning process)
 
+[https://img.shields.io/badge/C++-20-green.svg?style=flat&logo=c%2B%2B](https://en.cppreference.com/w/cpp/compiler_support/20)
+
 ## About
 This is a project based on [C++ RPG Code Along](https://www.youtube.com/playlist?list=PLalVdRk2RC6pqOVxRNj5Uui7FN4r-WorM)
 video on YouTube. The project code can be found over here:
