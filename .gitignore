@@ -30,3 +30,15 @@
 *.exe
 *.out
 *.app
+
+# Redundant
+.idea/
+cmake-build-debug/
+/.settings/
+/.cproject
+/.gitignore
+/.project
+#.gitignore
+/Debug/
+/.DS_Store
+/content
