@@ -5,14 +5,10 @@ set(CMAKE_CXX_STANDARD 20)
 
 add_executable(demo_rpg
         src/main.cpp
-        src/warrior.h
-        src/stat_types.h
-        src/character.h
-        src/stat_block.h
-        src/wizard.h
-        src/cleric.h
-        src/rogue.h
+        src/character_stats.h
+        src/player_classes.h
         src/level_system.h
         src/tests.h
         src/tests.cpp
+        src/player_character_delegate.h
 )

@@ -3,11 +3,11 @@
 
 #include <iostream>
 
-#include "character.h"
+#include "player_classes.h"
 
-void separator(const std::string& func_name);
+void separator(const std::string& func_name, const int& line);
 
-void show_stats(const Character& char_, const std::string& title);
+void show_stats(const PlayerCharacter& char_);
 
 void test_characters();
 

@@ -6,12 +6,12 @@ coding some basic RPG systems in C++
 
 some quick theoretical lists to get started
 
-### classes
+### character classes
 
-- warrior: HP Growth 20: highest damage reduction
-- wizard: HP Growth 10: uses magic
-- cleric: HP Growth 15: uses support magic
-- rogue: HP Growth 15: highest consistent melee/ranged damage
+- warrior: highest hp/damage reduction
+- wizard: uses magic
+- cleric: uses support magic
+- rogue: highest consistent melee/ranged damage
 
 #### Stats
 - hit points
@@ -24,13 +24,11 @@ some quick theoretical lists to get started
 - gain abilities based on level
 
 ### equipment
-
 - shop system
 - equipment
 - consumables
 
 ### game loop
-
 - battle system: turn based
 - world levels
 - different monsters
