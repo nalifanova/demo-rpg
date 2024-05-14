@@ -39,6 +39,6 @@ to ensure that the code remains readable and consistent.
 * Functions and methods should also use snake_case.
 * Note! While I prefer using all uppercase for constants, both guides recommend 
   using it for macros. Therefore, I'll adhere to the 
-  (Google rule)[https://google.github.io/styleguide/cppguide.html#Constant_Names]
+  [Google rule](https://google.github.io/styleguide/cppguide.html#Constant_Names)
   use `const int kDaysInAWeek = 7`. It's important for me to clearly indicate 
   that it is a constant (from global perspective).
