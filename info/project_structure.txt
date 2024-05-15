@@ -1,0 +1,17 @@
+demo_rpg/
+|__ CMakeLists.txt          // CMake config file
+|__ README.md               // Project documentation
+|__ src/                    // Source files
+|   |-- headers/            // header files
+|   |   |__ my_class.h
+|   |   |__ utils.h
+|   |__ main.cpp
+|   |__ my_class.cpp
+|   |__ utils.cpp
+|__ tests/                  // Tests
+|   |__ CMakeLists.txt      // Cmake config file for tests
+|   |__ test_my_class.cpp
+|   |__ test_utils.cpp
+|__ scripts/                // Scripts for automatic tasks - maybe
+|   |__ run_tests.sh
+|__ cmake-build-debug       // dir for builds (in .gitignore)

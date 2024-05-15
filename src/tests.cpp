@@ -1,6 +1,8 @@
-#include "tests.h"
+#include "headers/tests.h"
 
 #include <vector>
+
+#include "headers/player_classes.h"
 
 void separator(const std::string& func_name, const int& line)
 {
@@ -20,7 +22,8 @@ void show_stats(const PlayerCharacter& char_)
     std::cout << title << '\n' <<
     "-HP: " << char_.get_current_hp() << '\n' <<
     "-Strength: " << char_.get_strength() << '\n' <<
-    "-Intellect: " << char_.get_intellect() << '\n';
+    "-Intellect: " << char_.get_intellect() << '\n' <<
+    "-Agility: " << char_.get_agility() << '\n';
     std::cout << '\n';
 }
 

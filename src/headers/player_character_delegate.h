@@ -10,15 +10,22 @@ class PlayerCharacterDelegate: public LevelSystem, public CharacterStats
 {
 public:
     PlayerCharacterDelegate(
-        const pointtype base_hp,
+        const stattype base_hp,
         const stattype base_str,
-        const stattype base_int
-    ): base_hp(base_hp), base_str(base_str), base_int(base_int)
+        const stattype base_int,
+        const stattype base_agl
+    ):
+    base_hp(base_hp),
+    base_str(base_str),
+    base_int(base_int),
+    base_agl(base_agl)
     {
         hp = std::make_unique<PointStack>();
         hp->set_max(base_hp);
         hp->increase(base_hp);
-        increase_stats(base_str, base_int);
+        increase_stats(base_str, base_int, base_agl);
+
+        class_name = __func__;
     }
     ~PlayerCharacterDelegate() override = default;
 
@@ -27,33 +34,35 @@ public:
 protected:
     void level_up() override
     {
-        // static_cast<pointtype>(static_cast<float>(base_hp) / 2.f)
         hp->set_max(division_by_2(base_hp) + hp->get_initial());
         hp->increase(division_by_2(base_hp));
 
         increase_stats(
             division_by_2(1u + base_str),
-            division_by_2(1u + base_int)
+            division_by_2(1u + base_int),
+            division_by_2(1u + base_agl)
         );
     }
 
 private:
     // Compiler/IDE shows warning and demands remove narrowing type conversion
     // >> "Clang-Tidy: Narrowing conversion from 'int' to 'float'"
-    // by doing: static_cast<pointtype>(static_cast<float>(base_hp) / 2.f)
+    // by doing: static_cast<stattype>(static_cast<float>(base_hp) / 2.f)
 
     // That's too much to type. Thus here we go.
-    // Note: std::uint16_t is taken for explicity, because stattype and
-    // pointtype are the same of type std::uint16_t which does not allow to do
-    // override the method. So, this is a pitfall!
-    static std::uint16_t division_by_2(const stattype value)
+    static stattype division_by_2(const stattype value)
     {
-        return static_cast<std::uint16_t>(static_cast<float>(value) / 2.f);
+        return static_cast<stattype>(static_cast<float>(value) / 2.f);
     }
 
-    pointtype base_hp;
+public:
+    const char* class_name;
+
+private:
+    stattype base_hp;
     stattype base_str;
     stattype base_int;
+    stattype base_agl;
 };
 
 #endif //PLAYER_CHARACTER_DELEGATE_H

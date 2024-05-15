@@ -6,52 +6,50 @@
 class Cleric final: public PlayerCharacterDelegate
 {
 public:
-    static constexpr pointtype kBaseHp = 15u;
+    static constexpr stattype kBaseHp = 15u;
     static constexpr stattype kbaseStr = 2u;
     static constexpr stattype kBaseInt = 3u;
+    static constexpr stattype kBaseAgl = 3u;
 
-    Cleric(): PlayerCharacterDelegate(kBaseHp, kbaseStr, kBaseInt)
-    {
-        name = __func__;
-    }
+    Cleric(): PlayerCharacterDelegate(kBaseHp, kbaseStr, kBaseInt, kBaseAgl) {}
 };
 
 class Rogue final: public PlayerCharacterDelegate
 {
 public:
-    static constexpr pointtype kBaseHp = 12u;
+    static constexpr stattype kBaseHp = 12u;
     static constexpr stattype kbaseStr = 3u;
     static constexpr stattype kBaseInt = 2u;
+    static constexpr stattype kBaseAgl = 3u;
 
-    Rogue(): PlayerCharacterDelegate(kBaseHp, kbaseStr, kBaseInt)
-    {
-        name = __func__;
-    }
+    Rogue(): PlayerCharacterDelegate(kBaseHp, kbaseStr, kBaseInt, kBaseAgl) {}
 };
 
 class Warrior final: public PlayerCharacterDelegate
 {
 public:
-    static constexpr pointtype kBaseHp = 18u;
+    static constexpr stattype kBaseHp = 18u;
     static constexpr stattype kbaseStr = 4u;
     static constexpr stattype kBaseInt = 1u;
+    static constexpr stattype kBaseAgl = 3u;
 
-    Warrior(): PlayerCharacterDelegate(kBaseHp, kbaseStr, kBaseInt)
+    Warrior(): PlayerCharacterDelegate(kBaseHp, kbaseStr, kBaseInt, kBaseAgl)
     {
-        name = __func__;
+        class_name = __func__;
     }
 };
 
 class Wizard final: public PlayerCharacterDelegate
 {
 public:
-    static constexpr pointtype kBaseHp = 10u;
+    static constexpr stattype kBaseHp = 10u;
     static constexpr stattype kbaseStr = 1u;
     static constexpr stattype kBaseInt = 4u;
+    static constexpr stattype kBaseAgl = 3u;
 
-    Wizard(): PlayerCharacterDelegate(kBaseHp, kbaseStr, kBaseInt)
+    Wizard(): PlayerCharacterDelegate(kBaseHp, kbaseStr, kBaseInt, kBaseAgl)
     {
-        name = __func__;
+        class_name = __func__;
     }
 };
 
@@ -72,7 +70,7 @@ public:
     // ----------
     [[nodiscard]] std::string get_class_name() const
     {
-        return m_player_class->name;
+        return m_player_class->class_name;
     }
 
     [[nodiscard]] leveltype get_level() const
@@ -90,12 +88,12 @@ public:
         return m_player_class->get_exp_to_next_level();
     }
 
-    [[nodiscard]] pointtype get_current_hp() const
+    [[nodiscard]] stattype get_current_hp() const
     {
         return m_player_class->hp->get_current();
     }
 
-    [[nodiscard]] pointtype get_max_hp() const
+    [[nodiscard]] stattype get_max_hp() const
     {
         return m_player_class->hp->get_initial();
     }
@@ -110,17 +108,22 @@ public:
         return m_player_class->get_intellect();
     }
 
+    [[nodiscard]] stattype get_agility() const
+    {
+        return m_player_class->get_agility();
+    }
+
     void gain_exp(const exptype points) const
     {
         m_player_class->gain_exp(points);
     }
 
-    void take_damage(const pointtype points) const
+    void take_damage(const stattype points) const
     {
         m_player_class->hp->reduce(points);
     }
 
-    void heal(const pointtype points) const
+    void heal(const stattype points) const
     {
         m_player_class->hp->increase(points);
     }
