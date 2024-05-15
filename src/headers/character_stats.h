@@ -6,36 +6,37 @@ typedef std::uint16_t stattype;
 class CharacterStats
 {
 public:
-    CharacterStats(): m_strength(1u), m_intellect(1u), m_agility(1u) {}
-
-    CharacterStats(
-        const stattype strength,
-        const stattype intellect,
-        const stattype agility
-    ): m_strength(strength), m_intellect(intellect), m_agility(agility) {}
+    explicit CharacterStats(
+        const stattype strength = 1u,
+        const stattype intellect = 1u,
+        const stattype agility = 1u,
+        const stattype armor = 0u,
+        const stattype resistance = 0u
+    ):
+    m_strength(strength),
+    m_intellect(intellect),
+    m_agility(agility),
+    m_armor(armor),
+    m_resistance(resistance)
+    {}
 
     virtual ~CharacterStats() = default;
 
-    [[nodiscard]] stattype get_strength() const
-    {
-        return m_strength;
-    }
+    [[nodiscard]] stattype get_strength() const { return m_strength; }
 
-    [[nodiscard]] stattype get_intellect() const
-    {
-        return m_intellect;
-    }
+    [[nodiscard]] stattype get_intellect() const { return m_intellect; }
 
-    [[nodiscard]] stattype get_agility() const
-    {
-        return m_agility;
-    }
+    [[nodiscard]] stattype get_agility() const { return m_agility; }
+
+    [[nodiscard]] stattype get_armor() const { return m_armor; }
+
+    [[nodiscard]] stattype get_resistance() const { return m_resistance; }
 
 protected:
     void increase_stats(
-        const stattype strength,
-        const stattype intellect,
-        const stattype agility
+        const stattype strength = 0u,
+        const stattype intellect = 0u,
+        const stattype agility = 0u
     )
     {
         m_strength += strength;
@@ -47,6 +48,8 @@ private:
     stattype m_strength;
     stattype m_intellect;
     stattype m_agility;
+    stattype m_armor;
+    stattype m_resistance;
 };
 
 

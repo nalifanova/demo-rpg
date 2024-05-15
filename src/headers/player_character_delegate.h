@@ -13,17 +13,25 @@ public:
         const stattype base_hp,
         const stattype base_str,
         const stattype base_int,
-        const stattype base_agl
+        const stattype base_agi,
+        const stattype base_arm,
+        const stattype base_res
     ):
     base_hp(base_hp),
     base_str(base_str),
     base_int(base_int),
-    base_agl(base_agl)
+    base_agi(base_agi),
+    base_arm(base_arm),
+    base_res(base_res)
     {
         hp = std::make_unique<PointStack>();
         hp->set_max(base_hp);
         hp->increase(base_hp);
-        increase_stats(base_str, base_int, base_agl);
+        increase_stats(
+            base_str,
+            base_int,
+            base_agi
+        );
 
         class_name = __func__;
     }
@@ -37,10 +45,12 @@ protected:
         hp->set_max(division_by_2(base_hp) + hp->get_initial());
         hp->increase(division_by_2(base_hp));
 
+        // Block for Magic characteristics
+
         increase_stats(
             division_by_2(1u + base_str),
             division_by_2(1u + base_int),
-            division_by_2(1u + base_agl)
+            division_by_2(1u + base_agi)
         );
     }
 
@@ -62,7 +72,9 @@ private:
     stattype base_hp;
     stattype base_str;
     stattype base_int;
-    stattype base_agl;
+    stattype base_agi;
+    stattype base_arm;
+    stattype base_res;
 };
 
 #endif //PLAYER_CHARACTER_DELEGATE_H

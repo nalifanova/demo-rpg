@@ -23,7 +23,9 @@ void show_stats(const PlayerCharacter& char_)
     "-HP: " << char_.get_current_hp() << '\n' <<
     "-Strength: " << char_.get_strength() << '\n' <<
     "-Intellect: " << char_.get_intellect() << '\n' <<
-    "-Agility: " << char_.get_agility() << '\n';
+    "-Agility: " << char_.get_agility() << '\n' <<
+    "-Armor: " << char_.get_armor() << '\n' <<
+    "-Resistance: " << char_.get_resistance() << '\n';
     std::cout << '\n';
 }
 

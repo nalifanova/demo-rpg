@@ -11,7 +11,17 @@ public:
     static constexpr stattype kBaseInt = 3u;
     static constexpr stattype kBaseAgl = 3u;
 
-    Cleric(): PlayerCharacterDelegate(kBaseHp, kbaseStr, kBaseInt, kBaseAgl) {}
+    Cleric(): PlayerCharacterDelegate(
+        kBaseHp,
+        kbaseStr,
+        kBaseInt,
+        kBaseAgl,
+        0,
+        0
+    )
+    {
+        class_name = __func__;
+    }
 };
 
 class Rogue final: public PlayerCharacterDelegate
@@ -22,7 +32,17 @@ public:
     static constexpr stattype kBaseInt = 2u;
     static constexpr stattype kBaseAgl = 3u;
 
-    Rogue(): PlayerCharacterDelegate(kBaseHp, kbaseStr, kBaseInt, kBaseAgl) {}
+    Rogue(): PlayerCharacterDelegate(
+        kBaseHp,
+        kbaseStr,
+        kBaseInt,
+        kBaseAgl,
+        0,
+        0
+    )
+    {
+        class_name = __func__;
+    }
 };
 
 class Warrior final: public PlayerCharacterDelegate
@@ -33,7 +53,14 @@ public:
     static constexpr stattype kBaseInt = 1u;
     static constexpr stattype kBaseAgl = 3u;
 
-    Warrior(): PlayerCharacterDelegate(kBaseHp, kbaseStr, kBaseInt, kBaseAgl)
+    Warrior(): PlayerCharacterDelegate(
+        kBaseHp,
+        kbaseStr,
+        kBaseInt,
+        kBaseAgl,
+        0,
+        0
+    )
     {
         class_name = __func__;
     }
@@ -47,11 +74,19 @@ public:
     static constexpr stattype kBaseInt = 4u;
     static constexpr stattype kBaseAgl = 3u;
 
-    Wizard(): PlayerCharacterDelegate(kBaseHp, kbaseStr, kBaseInt, kBaseAgl)
+    Wizard(): PlayerCharacterDelegate(
+        kBaseHp,
+        kbaseStr,
+        kBaseInt,
+        kBaseAgl,
+        0,
+        0
+    )
     {
         class_name = __func__;
     }
 };
+
 
 class PlayerCharacter
 {
@@ -111,6 +146,16 @@ public:
     [[nodiscard]] stattype get_agility() const
     {
         return m_player_class->get_agility();
+    }
+
+    [[nodiscard]] stattype get_armor() const
+    {
+        return m_player_class->get_armor();
+    }
+
+    [[nodiscard]] stattype get_resistance() const
+    {
+        return m_player_class->get_resistance();
     }
 
     void gain_exp(const exptype points) const
