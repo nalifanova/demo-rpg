@@ -18,6 +18,9 @@ add_executable(${PROJECT_NAME}
         src/headers/tests.h
         src/main.cpp
         src/tests.cpp
+        src/headers/types.h
+        src/headers/buff.h
+        src/headers/ability.h
 )
 
 # ----------- For including tests -----------
