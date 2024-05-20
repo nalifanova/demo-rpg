@@ -101,3 +101,86 @@ void test_buff()
         }
     }
 }
+
+void test_core_stats()
+{
+    separator(__func__, __LINE__);
+
+    CoreStats core_stats = {22, 24, 10, 1, 10};
+    std::cout << "Core Stats:\n" << "\tstrength: " <<
+        core_stats.strength << '\n' << "\tintellect: " <<
+        core_stats.intellect << '\n' << "\tagility: " <<
+        core_stats.agility << '\n' << "\tarmor: " <<
+        core_stats.armor << '\n' << "\tresistance: " <<
+        core_stats.resistance << '\n';
+
+    std::cout << "\nAdd intellect and agility +2\n";
+    core_stats.agility += 2;
+    core_stats.intellect += 2;
+
+    std::cout << "Updated Core Stats:\n" << "\tstrength: " <<
+        core_stats.strength << '\n' << "\tintellect: " <<
+        core_stats.intellect << '\n' << "\tagility: " <<
+        core_stats.agility << '\n' << "\tarmor: " <<
+        core_stats.armor << '\n' << "\tresistance: " <<
+        core_stats.resistance << '\n';
+}
+
+void test_equipment()
+{
+    separator(__func__, __LINE__);
+
+    PlayerCharacter warrior(new Warrior());
+    show_stats(warrior);
+    { // just a code block
+        CoreStats plate_armor_stats;
+        plate_armor_stats.armor = 5;
+        plate_armor_stats.resistance = 5;
+
+        const auto full_plate_armor = new Armor(
+            "Shiny Plate Armor",
+            plate_armor_stats,
+            ArmorSlot::chest
+        );
+        if(warrior.equip(full_plate_armor))
+        {
+            std::cout << "equip success!\n";
+        }
+        else
+        {
+            std::cout << "equip failed!\n";
+        }
+    } // end of code block
+
+    { // just a code block
+        CoreStats leather_helmet_stats;
+        leather_helmet_stats.armor = 3;
+        leather_helmet_stats.resistance = 2;
+
+        const auto leather_helmet_armor = new Armor(
+            "Leather Helmet",
+            leather_helmet_stats,
+            ArmorSlot::helmet
+        );
+        if(warrior.equip(leather_helmet_armor))
+        {
+            std::cout << "equip success!\n";
+        }
+        else
+        {
+            std::cout << "equip failed!\n";
+        }
+    } // end of code block
+
+    std::cout << "Armor\n";
+
+    for (int i = 0; i < static_cast<int>(ArmorSlot::num_slots); i++)
+    {
+        if (const Armor* tmp = dynamic_cast<Armor*>(
+            warrior.get_equipped_armor_at(i))
+        )
+            std::cout << " - " <<  tmp->get_name() << '\n';
+    }
+    // checking stats
+    show_stats(warrior);
+}

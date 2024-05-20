@@ -21,6 +21,9 @@ add_executable(${PROJECT_NAME}
         src/headers/types.h
         src/headers/buff.h
         src/headers/ability.h
+        src/headers/core_stats.h
+        src/headers/equipment.h
+        src/headers/player_character.h
 )
 
 # ----------- For including tests -----------

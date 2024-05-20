@@ -3,76 +3,73 @@
 
 #include <vector>
 
-#include "buff.h"
+#include "core_stats.h"
 #include "types.h"
 
 class CharacterStats
 {
 public:
     explicit CharacterStats(
-        const stattype strength = 1,
-        const stattype intellect = 1,
-        const stattype agility = 1,
+        const stattype strength = 0,
+        const stattype intellect = 0,
+        const stattype agility = 0,
         const stattype armor = 0,
         const stattype resistance = 0
-    ):
-    m_base_strength(strength),
-    m_base_intellect(intellect),
-    m_base_agility(agility),
-    m_base_armor(armor),
-    m_base_resistance(resistance)
-    {}
+    )
+    {
+        m_base = {strength, intellect, agility, armor, resistance};
+    }
 
     virtual ~CharacterStats() = default;
 
     [[nodiscard]] stattype get_strength() const
     {
-        return m_base_strength + m_strength;
+        return static_cast<stattype>(m_base.strength + m_buffed.strength);
     }
 
     [[nodiscard]] stattype get_intellect() const
     {
-        return m_base_intellect + m_intellect;
+        return static_cast<stattype>(m_base.intellect + m_buffed.intellect);
     }
 
     [[nodiscard]] stattype get_agility() const
     {
-        return m_base_agility + m_agility;
+        return static_cast<stattype>(m_base.agility + m_buffed.agility);
     }
 
     [[nodiscard]] stattype get_armor() const
     {
-        return m_base_armor + m_armor;
+        return static_cast<stattype>(m_base.armor + m_buffed.armor);
     }
 
     [[nodiscard]] stattype get_resistance() const
     {
-        return m_base_resistance + m_resistance;
+        return static_cast<stattype>(m_base.resistance + m_buffed.resistance);
     }
 
     [[nodiscard]] stattype get_base_strength() const
     {
-        return m_base_strength;
+        return m_base.strength;
     }
 
     [[nodiscard]] stattype get_base_intellect() const
     {
-        return m_base_intellect;
+        return m_base.intellect;
     }
 
     [[nodiscard]] stattype get_base_agility() const
     {
-        return m_base_agility;
+        return m_base.agility;
     }
 
     [[nodiscard]] stattype get_base_armor() const
     {
-        return m_base_armor;
+        return m_base.armor;
     }
 
     [[nodiscard]] stattype get_base_resistance() const
     {
-        return m_base_resistance;
+        return m_base.resistance;
     }
 
 protected:
@@ -84,14 +81,15 @@ protected:
         const stattype resistance = 0
     )
     {
-        m_base_strength += strength;
-        m_base_intellect += intellect;
-        m_base_agility += agility;
-        m_base_armor += armor;
-        m_base_resistance += resistance;
+        m_base = {strength, intellect, agility, armor, resistance};
     }
 
-    void add_new_buff(Buff buff) // we want to use a copy
+    void increase_stats(const CoreStats core_stats)
+    {
+        m_base += core_stats;
+    }
+
+    void add_new_buff(const Buff& buff)
     {
         for (auto& buff_: Buffs)
         {
@@ -103,62 +101,28 @@ protected:
         Buffs.push_back(buff);
         m_recalculate_buff();
     }
+
 private:
     void m_recalculate_buff()
     {
-        stattype m_strength_with_buffs = 0;
-        stattype m_intellect_with_buffs = 0;
-        stattype m_agility_with_buffs = 0;
-        stattype m_armor_with_buffs = 0;
-        stattype m_resistance_with_buffs = 0;
+        CoreStats with_buffs;
 
         for (const auto& buff_: Buffs)
         {
             if (buff_.is_debuff)
-            {
-                m_strength_with_buffs -= buff_.strength;
-                m_intellect_with_buffs -= buff_.intellect;
-                m_agility_with_buffs -= buff_.agility;
-                m_armor_with_buffs -= buff_.armor;
-                m_resistance_with_buffs -= buff_.resistance;
-            }
+                with_buffs -= buff_.stats;
             else
-            {
-                m_strength_with_buffs += buff_.strength;
-                m_intellect_with_buffs += buff_.intellect;
-                m_agility_with_buffs += buff_.agility;
-                m_armor_with_buffs += buff_.armor;
-                m_resistance_with_buffs += buff_.resistance;
-            }
+                with_buffs += buff_.stats;
         }
-        m_strength = m_strength_with_buffs;
-        m_intellect = m_intellect_with_buffs;
-        m_agility = m_agility_with_buffs;
-        m_armor = m_armor_with_buffs;
-        m_resistance = m_resistance_with_buffs;
-
-        if (m_strength < 0) m_strength = 0;
-        if (m_intellect < 0) m_intellect = 0;
-        if (m_agility < 0) m_agility = 0;
-        if (m_armor < 0) m_armor = 0;
-        if (m_resistance < 0) m_resistance = 0;
+        m_buffed = with_buffs;
     }
 
 protected:
     std::vector<Buff> Buffs;
 
 private:
-    stattype m_strength = 0;
-    stattype m_intellect = 0;
-    stattype m_agility = 0;
-    stattype m_armor = 0;
-    stattype m_resistance = 0;
-
-    stattype m_base_strength;
-    stattype m_base_intellect;
-    stattype m_base_agility;
-    stattype m_base_armor;
-    stattype m_base_resistance;
+    CoreStats m_buffed;
+    CoreStats m_base;
 };
 
 

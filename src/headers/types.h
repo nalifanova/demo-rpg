@@ -12,4 +12,6 @@ typedef std::uint64_t exptype; // 2^64 - 1 equals ooh! (unsigned)
 typedef std::uint16_t pointtype;
 typedef std::int16_t stattype;
 
+typedef std::uint16_t damagetype;
+
 #endif //TYPES_H

@@ -42,3 +42,6 @@ to ensure that the code remains readable and consistent.
   [Google rule](https://google.github.io/styleguide/cppguide.html#Constant_Names)
   use `const int kDaysInAWeek = 7`. It's important for me to clearly indicate 
   that it is a constant (from global perspective).
+* In a class the order is: public, protected, private methods and public, 
+  protected, private variables (I prefer to separate them unless there's obvious
+  no-need mark). Private variables and methods have prefix `m_`.

@@ -92,6 +92,7 @@ public:
     std::unique_ptr<PointStack> hp;
     std::unique_ptr<PointStack> mp;
     std::vector<Ability> abilities;
+    std::vector<Buff> buffs;
 
 private:
     pointtype base_hp;
