@@ -51,11 +51,11 @@ void test_characters()
     const PlayerCharacter cleric(new Cleric());
     const PlayerCharacter rogue(new Rogue());
 
-    const std::vector<PlayerCharacter> charachters = {
+    const std::vector<PlayerCharacter> characters = {
         warrior, wizard, cleric, rogue
     };
 
-    for (const auto& char_: charachters)
+    for (const auto& char_: characters)
     {
         show_stats(char_);
         std::cout << '\n';
@@ -179,7 +179,7 @@ void test_equipment()
         if (const Armor* tmp = dynamic_cast<Armor*>(
             warrior.get_equipped_armor_at(i))
         )
-            std::cout << " - " <<  tmp->get_name() << '\n';
+            std::cout << " - " <<  tmp->name << '\n';
     }
     // checking stats
     show_stats(warrior);

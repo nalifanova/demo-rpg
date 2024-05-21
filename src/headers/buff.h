@@ -9,31 +9,34 @@
 struct Buff
 {
     explicit Buff (
-        const char* name,
+        const char* name = "undefined",
         const uint16_t duration = 2u,
-        const bool is_debuff = false,
-        const stattype strength = 0,
-        const stattype intellect = 0,
-        const stattype agility = 0,
-        const stattype armor = 0,
-        const stattype resistance = 0
-    ): name(name), duration(duration), is_debuff(is_debuff)
-    {
-        stats.strength = strength;
-        stats.intellect = intellect;
-        stats.agility = agility;
-        stats.armor = armor;
-        stats.resistance = resistance;
-    }
+        const CoreStats stats = CoreStats(),
+        const bool is_debuff = false
+    ): name(name), duration(duration), stats(stats), is_debuff(is_debuff) {}
 
     explicit Buff(
         const char* name,
         const uint16_t duration = 2u,
-        const bool is_debuff = false,
-        const CoreStats core_stats = {0, 0, 0, 0, 0}
-        ): name(name), duration(duration), is_debuff(is_debuff)
+        const stattype strength = 0,
+        const stattype intellect = 0,
+        const stattype agility = 0,
+        const stattype armor = 0,
+        const stattype resistance = 0,
+        const bool is_debuff = false
+    ):
+    name(name),
+    duration(duration),
+    stats({strength, intellect, agility, armor, resistance}),
+    is_debuff(is_debuff) {}
+
+    Buff& operator=(const char* name)
     {
-        stats = core_stats;
+        this->name = std::string(name);
+        this->duration = 2u;
+        this->stats = CoreStats(0);
+        this->is_debuff = false;
+        return *this;
     }
 
     std::string name;

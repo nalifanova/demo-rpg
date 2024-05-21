@@ -1,7 +1,7 @@
 #ifndef PLAYER_CHARACTER_H
 #define PLAYER_CHARACTER_H
 
-#include "equipment.h"
+#include "item.h"
 #include "player_character_delegate.h"
 
 class PlayerCharacter
@@ -16,24 +16,22 @@ public:
     // PlayerCharacter(const PlayerCharacter&) = delete; // no copy
     // PlayerCharacter(const PlayerCharacter&&) = delete; // no move
 
-    explicit PlayerCharacter(PlayerCharacterDelegate* player):
-    m_player_class(player)
+    explicit PlayerCharacter(PlayerCharacterDelegate* player)
+    :m_player_class(player)
     {
         int i;
         for (i = 0; i < static_cast<unsigned int>(ArmorSlot::num_slots); i++)
-        {
             m_equipped_armors[i] = nullptr;
-        }
 
         for (i = 0; i < static_cast<unsigned int>(WeaponSlot::num_slots); i++)
-        {
             m_equipped_weapons[i] = nullptr;
-        }
     }
 
     ~PlayerCharacter()
     {
-        // delete m_player_class; // throws an error
+        // deletion of m_player_class leads to
+        // memory violation issue - 139 (interrupted by signal 11:SIGSEGV)
+        // delete m_player_class;
         m_player_class = nullptr;
         for (auto & equipped_armor : m_equipped_armors)
         {
@@ -102,10 +100,12 @@ public:
     [[nodiscard]] stattype get_strength() const
     {
         stattype str_from_armor = 0;
-        for (const auto m_equipped_armor : m_equipped_armors)
+        // Armor* armor = nullptr;
+        for (int i = 0; i < static_cast<int>(ArmorSlot::num_slots); i++)
+        // for (const auto m_equipped_armor : m_equipped_armors)
         {
-            if (m_equipped_armor)
-                str_from_armor += m_equipped_armor->get_stats().strength;
+            if (m_equipped_armors[i])
+                str_from_armor += m_equipped_armors[i]->get_stats().strength;
         }
         return static_cast<stattype>(
             m_player_class->get_strength() + str_from_armor
@@ -115,11 +115,11 @@ public:
     [[nodiscard]] stattype get_intellect() const
     {
         stattype int_from_armor = 0;
-        for (const auto m_equipped_armor : m_equipped_armors)
-        {
-            if (m_equipped_armor)
-                int_from_armor += m_equipped_armor->get_stats().intellect;
-        }
+        // for (const auto m_equipped_armor : m_equipped_armors)
+        // {
+        //     if (m_equipped_armor)
+        //         int_from_armor += m_equipped_armor->get_stats().intellect;
+        // }
         return static_cast<stattype>(
             m_player_class->get_intellect() + int_from_armor
         );
@@ -128,11 +128,11 @@ public:
     [[nodiscard]] stattype get_agility() const
     {
         stattype agi_from_armor = 0;
-        for (const auto m_equipped_armor : m_equipped_armors)
-        {
-            if (m_equipped_armor)
-                agi_from_armor += m_equipped_armor->get_stats().agility;
-        }
+        // for (const auto m_equipped_armor : m_equipped_armors)
+        // {
+        //     if (m_equipped_armor)
+        //         agi_from_armor += m_equipped_armor->get_stats().agility;
+        // }
         return static_cast<stattype>(
             m_player_class->get_agility() + agi_from_armor
         );
@@ -141,11 +141,11 @@ public:
     [[nodiscard]] stattype get_armor() const
     {
         stattype armor_from_armor = 0;
-        for (const auto m_equipped_armor : m_equipped_armors)
-        {
-            if (m_equipped_armor)
-                armor_from_armor += m_equipped_armor->get_stats().armor;
-        }
+        // for (const auto m_equipped_armor : m_equipped_armors)
+        // {
+        //     if (m_equipped_armor)
+        //         armor_from_armor += m_equipped_armor->get_stats().armor;
+        // }
         return static_cast<stattype>(
             m_player_class->get_armor() + armor_from_armor
         );
@@ -154,11 +154,11 @@ public:
     [[nodiscard]] stattype get_resistance() const
     {
         stattype resist_from_armor = 0;
-        for (const auto m_equipped_armor : m_equipped_armors)
-        {
-            if (m_equipped_armor)
-                resist_from_armor += m_equipped_armor->get_stats().resistance;
-        }
+        // for (const auto m_equipped_armor : m_equipped_armors)
+        // {
+        //     if (m_equipped_armor)
+        //         resist_from_armor += m_equipped_armor->get_stats().resistance;
+        // }
         return static_cast<stattype>(
             m_player_class->get_resistance() + resist_from_armor
         );
@@ -199,12 +199,19 @@ public:
         return m_player_class->buffs;
     }
 
-    [[nodiscard]] Equipment* get_equipped_armor_at(const int index) const
+    [[nodiscard]] std::vector<Item*> get_backpack_list() const
     {
+        return m_backpack;
+    }
+
+    [[nodiscard]] EquipmentDelegate* get_equipped_armor_at(const int index) const
+    {
+        if (!m_equipped_armors[index])
+            return nullptr;
         return dynamic_cast<Armor*>(m_equipped_armors[index]);
     }
 
-    [[nodiscard]] Equipment* get_equipped_weapon_at(const int index) const
+    [[nodiscard]] EquipmentDelegate* get_equipped_weapon_at(const int index) const
     {
         return dynamic_cast<Weapon*>(m_equipped_weapons[index]);
     }
@@ -231,7 +238,7 @@ public:
     }
 
     // modify when we have an inventory
-    bool equip(Equipment* equipment)
+    bool equip(EquipmentDelegate* equipment)
     {
         if (auto* armor = dynamic_cast<Armor*>(equipment))
         {
@@ -263,12 +270,13 @@ public:
 private:
     PlayerCharacterDelegate* m_player_class = nullptr;
     // std::unique_ptr<PlayerCharacterDelegate> m_player_class;
-    Armor* m_equipped_armors[
+    EquipmentDelegate* m_equipped_armors[
         static_cast<unsigned int>(ArmorSlot::num_slots)
-    ];
-    Weapon* m_equipped_weapons[
+    ]{};
+    EquipmentDelegate* m_equipped_weapons[
         static_cast<unsigned int>(WeaponSlot::num_slots)
-    ];
+    ]{};
+    std::vector<Item*> m_backpack;
 };
 
 #endif //PLAYER_CHARACTER_H

@@ -10,8 +10,9 @@ typedef std::uint16_t leveltype; // 2^8 - 1 equals 255 (unsigned)
 typedef std::uint64_t exptype; // 2^64 - 1 equals ooh! (unsigned)
 
 typedef std::uint16_t pointtype;
-typedef std::int16_t stattype;
+typedef std::uint16_t stattype;
 
 typedef std::uint16_t damagetype;
+typedef std::uint16_t itemcount;
 
 #endif //TYPES_H
