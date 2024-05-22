@@ -304,5 +304,4 @@ void test_inventory()
             std::cout << *it << ", ";
         std::cout << '\n';
     }
-    std::cout << "-= There should be NO Grand Heal Potion :/ =-. \n";
 }
