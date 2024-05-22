@@ -6,6 +6,8 @@
 #include "buff.h"
 #include "core_stats.h"
 
+#define GET_TYPE const char* get_type() override {return typeid(*this).name();};
+
 class ItemDelegate
 {
 public:
@@ -69,7 +71,7 @@ public:
     Armor(const std::string& name, const CoreStats stats, const ArmorSlot slot):
     EquipmentDelegate(name, stats), m_slot(slot) {}
 
-    const char* get_type() override { return typeid(*this).name(); }
+    GET_TYPE
 
     // getters
     [[nodiscard]] ArmorSlot get_slot() const
@@ -111,12 +113,22 @@ public:
     m_max_damage(max),
     is_2handed(is_2handed){}
 
-    const char* get_type() override { return typeid(*this).name(); }
+    GET_TYPE
 
     // getters
     [[nodiscard]] WeaponSlot get_slot() const
     {
         return m_slot;
+    }
+
+    [[nodiscard]] damagetype get_min_damage() const
+    {
+        return m_min_damage;
+    }
+
+    [[nodiscard]] damagetype get_max_damage() const
+    {
+        return m_max_damage;
     }
 
     // setters
@@ -134,44 +146,9 @@ private:
     friend class ItemManager;
 };
 
-class Item final
-{
-public:
-    [[nodiscard]] ItemDelegate* get_data() const
-    {
-        return m_data;
-    }
-
-    [[nodiscard]] bool get_marked_for_deletion() const
-    {
-        return m_marked_for_deletion;
-    }
-
-private:
-    explicit Item(ItemDelegate* item): m_data(item) {}
-
-    ~Item()
-    {
-        if (m_data)
-        {
-            delete m_data;
-            m_data = nullptr;
-        }
-    }
-
-    friend class ItemManager;
-    ItemDelegate* m_data = nullptr;
-    bool m_marked_for_deletion = false;
-
-    friend class ItemManager;
-    friend class PlayerCharacter;
-};
-
 class Potion final: public ItemDelegate
 {
 public:
-    const char* get_type() override { return "Potion"; };
-
     ~Potion() override
     {
         if (buff)
@@ -180,6 +157,8 @@ public:
             buff = nullptr;
         }
     }
+    GET_TYPE
+
 private:
     explicit Potion(
         const std::string name,
@@ -196,6 +175,62 @@ public:
 
 private:
     friend class ItemManager;
+};
+
+class Item final
+{
+public:
+    [[nodiscard]] ItemDelegate* get_data() const
+    {
+        return m_data;
+    }
+
+    [[nodiscard]] bool get_marked_for_deletion() const
+    {
+        return m_marked_for_deletion;
+    }
+
+    void mark_for_deletion() const
+    {
+        m_marked_for_deletion = true;
+    }
+
+private:
+    explicit Item(ItemDelegate* item): m_data(item) {}
+
+    ~Item()
+    {
+        if (m_data)
+        {
+            delete m_data;
+            m_data = nullptr;
+        }
+    }
+
+    friend class ItemManager;
+    ItemDelegate* m_data = nullptr;
+    mutable bool m_marked_for_deletion = false;
+
+    friend class ItemManager;
+    friend class PlayerCharacter;
+
+    // nice methods
+    friend std::ostream& operator<<(std::ostream& os, const Item& t)
+    {
+        if (const auto* tmp_cast1 = dynamic_cast<Armor*>(t.get_data()))
+            return os << tmp_cast1->name << " (Armor: " <<
+                tmp_cast1->get_stats().armor << ')';
+
+        if (const auto* tmp_cast2 = dynamic_cast<Weapon*>(t.get_data()))
+            return os << tmp_cast2->name << " (Damage: " <<
+                tmp_cast2->get_min_damage() << '-' <<
+                tmp_cast2->get_max_damage() << ')';
+
+        if (const auto* tmp_cast3 = dynamic_cast<Potion*>(t.get_data()))
+            return os << tmp_cast3->name << '(' << tmp_cast3->quantity << ')';
+
+        return os;
+    }
 };
 
 #endif //ITEM_H
