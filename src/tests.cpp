@@ -2,6 +2,7 @@
 
 #include <vector>
 
+#include "headers/item_manager.h"
 #include "headers/player_classes.h"
 
 void separator(const std::string& func_name, const int& line)
@@ -132,24 +133,21 @@ void test_equipment()
 
     PlayerCharacter warrior(new Warrior());
     show_stats(warrior);
+
     { // just a code block
         CoreStats plate_armor_stats;
         plate_armor_stats.armor = 5;
         plate_armor_stats.resistance = 5;
 
-        const auto full_plate_armor = new Armor(
+        const auto full_plate_armor = ItemManager::create_armor(
             "Shiny Plate Armor",
             plate_armor_stats,
             ArmorSlot::chest
         );
         if(warrior.equip(full_plate_armor))
-        {
-            std::cout << "equip success!\n";
-        }
+            std::cout << "shiny plate armor equip success!\n";
         else
-        {
-            std::cout << "equip failed!\n";
-        }
+            std::cout << "shiny plate armor equip failed!\n";
     } // end of code block
 
     { // just a code block
@@ -157,19 +155,30 @@ void test_equipment()
         leather_helmet_stats.armor = 3;
         leather_helmet_stats.resistance = 2;
 
-        const auto leather_helmet_armor = new Armor(
+        const auto leather_helmet_armor = ItemManager::create_armor(
             "Leather Helmet",
             leather_helmet_stats,
             ArmorSlot::helmet
         );
         if(warrior.equip(leather_helmet_armor))
-        {
-            std::cout << "equip success!\n";
-        }
+            std::cout << "Leather Helmet equip success!\n";
         else
-        {
-            std::cout << "equip failed!\n";
-        }
+            std::cout << "Leather Helmet equip failed!\n";
+    } // end of code block
+
+    { // just a code block
+        Item* long_sword = ItemManager::create_weapon(
+            "Long Sword",
+            CoreStats(),
+            WeaponSlot::melee,
+            3,
+            9,
+            true
+        );
+        if(warrior.equip(long_sword))
+            std::cout << "Long Sword equip success!\n";
+        else
+            std::cout << "Long Sword equip failed!\n";
     } // end of code block
 
     std::cout << "Armor\n";
@@ -181,6 +190,38 @@ void test_equipment()
         )
             std::cout << " - " <<  tmp->name << '\n';
     }
+
+    std::cout << "Weapon\n";
+
+    for (int i = 0; i < static_cast<int>(WeaponSlot::num_slots); i++)
+    {
+        if (const Weapon* tmp = dynamic_cast<Weapon*>(
+            warrior.get_equipped_weapon_at(i))
+        )
+            std::cout << " - " <<  tmp->name << '\n';
+    }
+
     // checking stats
     show_stats(warrior);
+}
+
+void test_potions()
+{
+    separator(__func__, __LINE__);
+
+    PlayerCharacter rogue(new Rogue());
+
+    std::cout << "HP before taking damage " << rogue.get_current_hp() << "/" <<
+        rogue.get_max_hp() << '\n';
+    rogue.take_damage(1);
+    std::cout << "HP after taking damage " << rogue.get_current_hp() << "/" <<
+        rogue.get_max_hp() << '\n';
+
+    Item* heal_potion = ItemManager::create_potion(
+        "Minor Heal Potion", 3u, 3u
+    );
+
+    rogue.use(heal_potion);
+    std::cout << "HP after using potion " << rogue.get_current_hp() << "/" <<
+        rogue.get_max_hp() << '\n';
 }

@@ -232,15 +232,17 @@ public:
         m_player_class->hp->increase(points);
     }
 
-    void apply_buff(Buff buff) const
+    void apply_buff(const Buff& buff) const
     {
-        m_player_class->apply_buff(std::move(buff));
+        m_player_class->apply_buff(buff);
     }
 
     // modify when we have an inventory
-    bool equip(EquipmentDelegate* equipment)
+    bool equip(const Item* equipment)
     {
-        if (auto* armor = dynamic_cast<Armor*>(equipment))
+        if (!equipment || !equipment->get_data()) return false;
+
+        if (auto* armor = dynamic_cast<Armor*>(equipment->get_data()))
         {
             const auto slot_num = static_cast<unsigned int>(armor->get_slot());
             if (m_equipped_armors[slot_num])
@@ -252,7 +254,7 @@ public:
             return true;
         }
 
-        if (auto* weapon = dynamic_cast<Weapon*>(equipment))
+        if (auto* weapon = dynamic_cast<Weapon*>(equipment->get_data()))
         {
             const auto slot_num = static_cast<unsigned int>(weapon->get_slot());
             if (m_equipped_weapons[slot_num])
@@ -262,6 +264,34 @@ public:
             }
             m_equipped_weapons[slot_num] = weapon;
 
+            return true;
+        }
+        return false;
+    }
+
+    bool use(const Item* item_to_use)
+    {
+        if (!item_to_use || !item_to_use->get_data()) return false;
+
+        Potion* potion = dynamic_cast<Potion*>(item_to_use->get_data());
+
+        if (potion)
+        {
+            // apply buff if it has one
+            if (potion->buff)
+                apply_buff(*potion->buff);
+
+            // if max health and trying to use a heal potion, don't use it
+            if (m_player_class->hp->is_full() && !potion->buff)
+                return false; // don't use the potion
+
+            // increase hp by the heal amount (could be 0 and that's fine)
+            m_player_class->hp->increase(potion->heal_amount);
+            // we used the potion, reduce quantity
+            potion->quantity--;
+
+            if (potion->quantity == 0)
+                delete potion;
             return true;
         }
         return false;

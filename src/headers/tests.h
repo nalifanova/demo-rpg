@@ -21,4 +21,6 @@ void test_core_stats();
 
 void test_equipment();
 
+void test_potions();
+
 #endif //TESTS_H

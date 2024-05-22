@@ -7,5 +7,6 @@ int main()
     test_buff();
     test_core_stats();
     test_equipment();
+    test_potions();
     return 0;
 }
