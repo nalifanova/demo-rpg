@@ -6,11 +6,40 @@
 // We do get rid of huge pieces of duplications
 struct CoreStats
 {
-    stattype strength = 1;
-    stattype intellect = 1;
-    stattype agility = 1;
-    stattype armor = 0;
-    stattype resistance = 0;
+    stattype strength;
+    stattype intellect;
+    stattype agility;
+    stattype armor;
+    stattype resistance;
+
+    CoreStats()
+    {
+        strength = 0;
+        intellect = 0;
+        agility = 0;
+        armor = 0;
+        resistance = 0;
+    }
+
+    CoreStats(
+        const stattype strength,
+        const stattype intellect,
+        const stattype agility,
+        const stattype armor,
+        const stattype resistance
+    ):
+    strength(strength),
+    intellect(intellect),
+    agility(agility),
+    armor(armor),
+    resistance(resistance) {}
+
+    explicit CoreStats(const stattype all):
+    strength(all),
+    intellect(all),
+    agility(all),
+    armor(all),
+    resistance(all) {}
 
     // return by _reference_
     CoreStats& operator+=(const CoreStats& rhs) // rhs = right hand side

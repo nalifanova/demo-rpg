@@ -10,6 +10,16 @@ set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
+if (WIN32)
+    set(CPP_VERSION -std=gnu++${CMAKE_CXX_STANDARD})
+elseif (APPLE)
+    set(CPP_VERSION -std=c++${CMAKE_CXX_STANDARD})
+else ()
+    set(CPP_VERSION -std=c++${CMAKE_CXX_STANDARD})
+endif ()
+
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Werror -Wno-reorder")
+
 add_executable(${PROJECT_NAME}
         src/headers/character_stats.h
         src/headers/level_system.h
@@ -22,8 +32,11 @@ add_executable(${PROJECT_NAME}
         src/headers/buff.h
         src/headers/ability.h
         src/headers/core_stats.h
-        src/headers/equipment.h
         src/headers/player_character.h
+        src/headers/point_stack.h
+        src/headers/item.h
+        src/headers/item_manager.h
+        src/headers/item.cpp
 )
 
 # ----------- For including tests -----------

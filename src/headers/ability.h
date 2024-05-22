@@ -3,33 +3,38 @@
 
 #include <iostream>
 
+#include "buff.h"
+
 enum class AbilityTarget{self, ally, enemy};
 enum class AbilityScaler{none, strength, agility, intellect};
 
 struct Ability
 {
-    Ability(
-        std::string name,
-        const uint32_t cost,
-        const uint32_t cooldown,
-        const AbilityTarget target,
-        const uint32_t hp_effect,
-        const AbilityScaler scaler
+    explicit Ability(
+        std::string name = "unnamed",
+        const uint32_t hp_effect = 1u,
+        Buff* buff = nullptr,
+        const uint32_t cost = 0u,
+        const uint32_t cooldown = 1u,
+        const AbilityTarget target = AbilityTarget::self,
+        const AbilityScaler scaler = AbilityScaler::none
     ):
     name(std::move(name)),
+    hp_effect(hp_effect),
+    given_buff(buff),
     cost(cost),
     cooldown(cooldown),
     target(target),
-    hp_effect(hp_effect),
     scaler(scaler)
     {}
 
-    std::string name = "unnamed";
-    uint32_t cost = 0; // assume mp if there is a cost
+    std::string name;
+    Buff* given_buff;
+    uint32_t cost; // assume mp if there is a cost
     // number of rounds you have to wait befire using it again
-    uint32_t cooldown = 1;
+    uint32_t cooldown;
+    uint32_t hp_effect;
     AbilityTarget target = AbilityTarget::self;
-    uint32_t hp_effect = 1;
     AbilityScaler scaler = AbilityScaler::none;
 };
 

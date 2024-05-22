@@ -2,6 +2,7 @@
 
 #include <vector>
 
+#include "headers/item_manager.h"
 #include "headers/player_classes.h"
 
 void separator(const std::string& func_name, const int& line)
@@ -9,6 +10,12 @@ void separator(const std::string& func_name, const int& line)
     std::cout << std::string(10, '-') << ' ' <<
         func_name << " - line [" << line - 2 << "] " <<
         std::string(30, '-') << '\n';
+}
+
+void show_hps(const PlayerCharacter& char_)
+{
+    std::cout <<  "HP: (" << std::to_string(char_.get_current_hp()) +
+            "/" + std::to_string(char_.get_max_hp()) + ")\n";
 }
 
 void show_stats(const PlayerCharacter& char_)
@@ -51,11 +58,11 @@ void test_characters()
     const PlayerCharacter cleric(new Cleric());
     const PlayerCharacter rogue(new Rogue());
 
-    const std::vector<PlayerCharacter> charachters = {
+    const std::vector<PlayerCharacter> characters = {
         warrior, wizard, cleric, rogue
     };
 
-    for (const auto& char_: charachters)
+    for (const auto& char_: characters)
     {
         show_stats(char_);
         std::cout << '\n';
@@ -132,55 +139,170 @@ void test_equipment()
 
     PlayerCharacter warrior(new Warrior());
     show_stats(warrior);
-    { // just a code block
-        CoreStats plate_armor_stats;
-        plate_armor_stats.armor = 5;
-        plate_armor_stats.resistance = 5;
 
-        const auto full_plate_armor = new Armor(
-            "Shiny Plate Armor",
-            plate_armor_stats,
-            ArmorSlot::chest
-        );
-        if(warrior.equip(full_plate_armor))
-        {
-            std::cout << "equip success!\n";
-        }
+    const auto full_plate_armor = ItemManager::create_armor(
+        "Shiny Plate Armor",
+        CoreStats(0,0,0,5, 5),
+        ArmorSlot::chest
+    );
+    const auto leather_helmet_armor = ItemManager::create_armor(
+        "Leather Helmet",
+        CoreStats(0,0,0, 3, 2),
+        ArmorSlot::helmet
+    );
+    Item* long_sword = ItemManager::create_weapon(
+        "Long Sword",
+        CoreStats(),
+        WeaponSlot::melee,
+        3,
+        9,
+        true
+    );
+
+    { // full_plate_armor code block
+        if(ItemManager::equip(full_plate_armor, &warrior))
+            std::cout << "Shiny Plate Armor equip success!\n";
         else
-        {
-            std::cout << "equip failed!\n";
-        }
-    } // end of code block
+            std::cout << "Shiny Plate Armor equip failed!\n";
+    } // full_plate_armor
 
-    { // just a code block
-        CoreStats leather_helmet_stats;
-        leather_helmet_stats.armor = 3;
-        leather_helmet_stats.resistance = 2;
-
-        const auto leather_helmet_armor = new Armor(
-            "Leather Helmet",
-            leather_helmet_stats,
-            ArmorSlot::helmet
-        );
-        if(warrior.equip(leather_helmet_armor))
-        {
-            std::cout << "equip success!\n";
-        }
+    { // leather_helmet_armor code block
+        if(ItemManager::equip(leather_helmet_armor, &warrior))
+            std::cout << "Leather Helmet equip success!\n";
         else
-        {
-            std::cout << "equip failed!\n";
-        }
-    } // end of code block
+            std::cout << "Leather Helmet equip failed!\n";
+    } // leather_helmet_armor
+
+    { // long_sword code block
+        if(ItemManager::equip(long_sword, &warrior))
+            std::cout << "Long Sword equip success!\n";
+        else
+            std::cout << "Long Sword equip failed!\n";
+    } // long_sword
 
     std::cout << "Armor\n";
 
     for (int i = 0; i < static_cast<int>(ArmorSlot::num_slots); i++)
     {
-        if (const Armor* tmp = dynamic_cast<Armor*>(
-            warrior.get_equipped_armor_at(i))
-        )
-            std::cout << " - " <<  tmp->get_name() << '\n';
+        if (const Armor* armor = warrior.get_equipped_armor_at(i))
+        {
+            std::cout << " - " <<  armor->name <<
+                " - Arm: (" << armor->get_stats().armor << "), Res: (" <<
+                armor->get_stats().resistance << ")\n";
+        }
     }
+
+    std::cout << "Weapon\n";
+
+    for (int i = 0; i < static_cast<int>(WeaponSlot::num_slots); i++)
+    {
+        if (const Weapon* weapon = warrior.get_equipped_weapon_at(i))
+        {
+            std::cout << " - " <<  weapon->name <<
+            " Dmg:(" << weapon->get_min_damage() <<
+            "-" << weapon->get_max_damage() << ")\n";
+        }
+    }
+
     // checking stats
     show_stats(warrior);
+}
+
+void test_potions()
+{
+    separator(__func__, __LINE__);
+
+    PlayerCharacter rogue(new Rogue());
+
+    std::cout << "HP before taking damage " << rogue.get_current_hp() << "/" <<
+        rogue.get_max_hp() << '\n';
+    rogue.take_damage(1);
+    std::cout << "HP after taking damage " << rogue.get_current_hp() << "/" <<
+        rogue.get_max_hp() << '\n';
+
+    Item* heal_potion = ItemManager::create_potion(
+        "Minor Heal Potion", 3u, 3u
+    );
+
+    ItemManager::use(heal_potion, &rogue);
+    std::cout << "HP after using potion " << rogue.get_current_hp() << "/" <<
+        rogue.get_max_hp() << '\n';
+}
+
+void test_inventory()
+{
+    separator(__func__, __LINE__);
+
+    PlayerCharacter wizard(new Wizard());
+
+    const auto light_armor = ItemManager::create_armor(
+        "Robe of Magician",
+        CoreStats(0,0,0,1, 5),
+        ArmorSlot::chest
+    );
+    Item* magic_wand = ItemManager::create_weapon(
+        "Magic Wand",
+        CoreStats(),
+        WeaponSlot::ranged,
+        3,
+        6,
+        true
+    );
+
+    const auto rusty_hand_axe = ItemManager::create_weapon(
+        "Rusty Hand Axe",
+        CoreStats(),
+        WeaponSlot::melee,
+        2,
+        4
+    );
+    ItemManager::move_to_backpack(light_armor, &wizard);
+    ItemManager::move_to_backpack(magic_wand, &wizard);
+    ItemManager::move_to_backpack(rusty_hand_axe, &wizard);
+
+    Item* minor_heal_potion = ItemManager::create_potion(
+        "Minor Heal Potion", 3u, 3u
+    );
+
+    Item* great_heal_potion = ItemManager::create_potion(
+        "Great Heal Potion", 10u, 1u
+    );
+    ItemManager::move_to_backpack(minor_heal_potion, &wizard);
+    ItemManager::move_to_backpack(great_heal_potion, &wizard);
+
+    {
+        const auto inventory = wizard.get_backpack_list();
+        std::cout << "Inventory: ";
+        for (const auto it: inventory)
+            std::cout << *it << ", ";
+        std::cout << "\n\n";
+    }
+
+    // checking hp
+    show_hps(wizard);
+    std::cout << "Wizard take damage: -4HP\n";
+    wizard.take_damage(4);
+
+    // checking hp
+    show_hps(wizard);
+
+    std::cout << "Wizard uses minor heal potion: +3HP\n";
+    ItemManager::use(minor_heal_potion, &wizard);
+    // checking hp
+    show_hps(wizard);
+
+    std::cout << "Wizard take damage: -5HP\n";
+    wizard.take_damage(5);
+    std::cout << "Wizard uses great heal potion: +10HP\n";
+    ItemManager::use(great_heal_potion, &wizard);
+    show_hps(wizard);
+
+    {
+        const auto inventory = wizard.get_backpack_list();
+        std::cout << "\nInventory after healing: ";
+        for (const auto it: inventory)
+            std::cout << *it << ", ";
+        std::cout << '\n';
+    }
+    std::cout << "-= There should be NO Grand Heal Potion :/ =-. \n";
 }

@@ -1,8 +1,6 @@
 #ifndef PLAYER_CLASSES_H
 #define PLAYER_CLASSES_H
 
-#include <utility>
-
 #include "player_character_delegate.h"
 
 class Cleric final: public PlayerCharacterDelegate
@@ -29,9 +27,10 @@ public:
         abilities.emplace_back(
             "Heal",
             2u,
+            nullptr,
             1u,
-            AbilityTarget::ally,
             2u,
+            AbilityTarget::ally,
             AbilityScaler::intellect
         );
     }
@@ -45,9 +44,10 @@ private:
             abilities.emplace_back(
             "Smite",
             2u,
+            nullptr,
             1u,
-            AbilityTarget::enemy,
             2u,
+            AbilityTarget::enemy,
             AbilityScaler::intellect
             );
         }
@@ -85,9 +85,10 @@ private:
             abilities.emplace_back(
                 "Precise Attack",
                 0u,
+                nullptr,
                 3u,
-                AbilityTarget::enemy,
                 6u,
+                AbilityTarget::enemy,
                 AbilityScaler::agility
             );
         }
@@ -124,9 +125,10 @@ private:
             abilities.emplace_back(
                 "Power Attack",
                 0u,
+                nullptr,
                 3u,
-                AbilityTarget::enemy,
                 4u,
+                AbilityTarget::enemy,
                 AbilityScaler::strength
             );
         }
@@ -163,9 +165,10 @@ private:
             abilities.emplace_back(
                 "IceBolt",
                 3u,
+                nullptr,
                 1u,
-                AbilityTarget::enemy,
                 6u,
+                AbilityTarget::enemy,
                 AbilityScaler::intellect
             );
 
