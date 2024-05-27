@@ -5,6 +5,7 @@
 
 #include "core_stats.h"
 #include "item.h"
+#include "potion.h"
 #include "player_character.h"
 
 class ItemManager

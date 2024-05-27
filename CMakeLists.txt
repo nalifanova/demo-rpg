@@ -23,11 +23,8 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Werror -Wno-reorder")
 add_executable(${PROJECT_NAME}
         src/headers/character_stats.h
         src/headers/level_system.h
-        src/headers/player_classes.h
         src/headers/player_character_delegate.h
         src/headers/tests.h
-        src/main.cpp
-        src/tests.cpp
         src/headers/types.h
         src/headers/buff.h
         src/headers/ability.h
@@ -36,7 +33,32 @@ add_executable(${PROJECT_NAME}
         src/headers/point_stack.h
         src/headers/item.h
         src/headers/item_manager.h
-        src/headers/item.cpp
+        src/headers/cleric.h
+        src/headers/rogue.h
+        src/headers/warrior.h
+        src/headers/wizard.h
+        src/headers/armor.h
+        src/headers/weapon.h
+        src/headers/potion.h
+        src/main.cpp
+        src/tests.cpp
+        src/item.cpp
+        src/ability.cpp
+        src/armor.cpp
+        src/buff.cpp
+        src/cleric.cpp
+        src/character_stats.cpp
+        src/core_stats.cpp
+        src/item.cpp
+        src/level_system.cpp
+        src/point_stack.cpp
+        src/player_character.cpp
+        src/player_character_delegate.cpp
+        src/potion.cpp
+        src/rogue.cpp
+        src/warrior.cpp
+        src/wizard.cpp
+        src/weapon.cpp
 )
 
 # ----------- For including tests -----------
