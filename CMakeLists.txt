@@ -59,6 +59,7 @@ add_executable(${PROJECT_NAME}
         src/warrior.cpp
         src/wizard.cpp
         src/weapon.cpp
+        src/item_manager.cpp
 )
 
 # ----------- For including tests -----------
