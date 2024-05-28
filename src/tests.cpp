@@ -1,9 +1,12 @@
-#include "headers/tests.h"
+#include "tests.h"
 
 #include <vector>
 
-#include "headers/item_manager.h"
-#include "headers/player_classes.h"
+#include "item_manager.h"
+#include "cleric.h"
+#include "rogue.h"
+#include "warrior.h"
+#include "wizard.h"
 
 void separator(const std::string& func_name, const int& line)
 {
@@ -148,7 +151,7 @@ void test_equipment()
     const auto leather_helmet_armor = ItemManager::create_armor(
         "Leather Helmet",
         CoreStats(0,0,0, 3, 2),
-        ArmorSlot::helmet
+        ArmorSlot::head
     );
     Item* long_sword = ItemManager::create_weapon(
         "Long Sword",
@@ -274,7 +277,8 @@ void test_inventory()
         const auto inventory = wizard.get_backpack_list();
         std::cout << "Inventory: ";
         for (const auto it: inventory)
-            std::cout << *it << ", ";
+            // std::cout << *it << ", ";
+            std::cout << it->get_data() << ", ";
         std::cout << "\n\n";
     }
 
@@ -301,7 +305,8 @@ void test_inventory()
         const auto inventory = wizard.get_backpack_list();
         std::cout << "\nInventory after healing: ";
         for (const auto it: inventory)
-            std::cout << *it << ", ";
+            // std::cout << *it << ", ";
+            std::cout << it->get_data() << ", ";
         std::cout << '\n';
     }
 }
