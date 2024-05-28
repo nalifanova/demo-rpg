@@ -1,4 +1,4 @@
-#include "headers/core_stats.h"
+#include "core_stats.h"
 
 CoreStats::CoreStats()
 {
@@ -56,5 +56,15 @@ CoreStats& CoreStats::operator-=(const CoreStats& rhs) // rhs = right hand side
     if (this->armor > tmp.armor) this->armor = 0;
     if (this->resistance > tmp.resistance) this->resistance = 0;
 
+    return *this;
+}
+
+CoreStats& CoreStats::operator=(const CoreStats& rhs) // rhs = right hand side
+{
+    this->strength = rhs.strength;
+    this->intellect = rhs.intellect;
+    this->agility = rhs.agility;
+    this->armor = rhs.armor;
+    this->resistance = rhs.resistance;
     return *this;
 }

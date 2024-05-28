@@ -1,4 +1,4 @@
-#include "headers/wizard.h"
+#include "wizard.h"
 
 Wizard::Wizard(): PlayerCharacterDelegate(
     kBaseHp,

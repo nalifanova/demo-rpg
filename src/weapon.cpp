@@ -1,4 +1,4 @@
-#include "headers/weapon.h"
+#include "weapon.h"
 
 Weapon::Weapon(
     const std::string& name,
@@ -34,6 +34,16 @@ is_2handed(is_2handed){}
 void Weapon::set_slot(const WeaponSlot* weapon)
 {
     m_slot = *weapon;
+}
+
+void Weapon::set_min_damage(damagetype amount)
+{
+    m_min_damage += amount;
+}
+
+void Weapon::set_max_damage(damagetype amount)
+{
+    m_max_damage += amount;
 }
 
 [[nodiscard]] bool Weapon::is_two_handed() const

@@ -8,11 +8,11 @@
 
 enum class ArmorSlot
 {
-    helmet,
+    head,
     chest,
     gloves,
     legs,
-    boots,
+    feet,
     ring1,
     ring2,
     neck,
@@ -35,7 +35,7 @@ public:
 
     [[nodiscard]] ArmorSlot get_slot() const;
 
-    void set_slot(const ArmorSlot* armor);
+    void set_slot(ArmorSlot slot_name);
 
 private:
     ArmorSlot m_slot;

@@ -1,4 +1,4 @@
-#include "headers/player_character.h"
+#include "player_character.h"
 
 PlayerCharacter::PlayerCharacter(PlayerCharacterDelegate* player)
 :m_player_class(player)

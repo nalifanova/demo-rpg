@@ -1,4 +1,4 @@
-#include "headers/cleric.h"
+#include "cleric.h"
 
 Cleric::Cleric(): PlayerCharacterDelegate(
     kBaseHp,

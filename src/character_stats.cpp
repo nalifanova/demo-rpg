@@ -1,4 +1,4 @@
-#include "headers/character_stats.h"
+#include "character_stats.h"
 
 CharacterStats::CharacterStats(
     const stattype strength,

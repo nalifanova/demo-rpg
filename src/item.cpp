@@ -1,4 +1,4 @@
-#include "headers/item.h"
+#include "item.h"
 
 // -- EquipmentDelegate --
 static std::uint32_t equip_iterator = 0u; // move to .cpp

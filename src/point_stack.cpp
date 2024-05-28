@@ -1,4 +1,4 @@
-#include "headers/point_stack.h"
+#include "point_stack.h"
 
 PointStack::PointStack(): m_current(1u), m_initial(1u) {};
 

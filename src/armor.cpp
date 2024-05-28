@@ -1,4 +1,4 @@
-#include "headers/armor.h"
+#include "armor.h"
 
 Armor::Armor(
     const std::string& name,
@@ -14,7 +14,7 @@ EquipmentDelegate(name, stats), m_slot(slot) {}
 }
 
 // setters
-void Armor::set_slot(const ArmorSlot* armor)
+void Armor::set_slot(const ArmorSlot slot_name)
 {
-    m_slot = *armor;
+    m_slot = slot_name;
 }

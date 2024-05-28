@@ -1,4 +1,4 @@
-#include "headers/warrior.h"
+#include "warrior.h"
 
 Warrior::Warrior(): PlayerCharacterDelegate(
     kBaseHp,

@@ -1,4 +1,4 @@
-#include "headers/player_character_delegate.h"
+#include "player_character_delegate.h"
 
 PlayerCharacterDelegate::PlayerCharacterDelegate(
     const pointtype base_hp,

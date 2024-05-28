@@ -1,4 +1,4 @@
-#include "headers/buff.h"
+#include "buff.h"
 
 Buff::Buff()
 {

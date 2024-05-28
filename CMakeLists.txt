@@ -1,13 +1,16 @@
+# set minimum cmake version
 cmake_minimum_required(VERSION 3.28)
+# project name, version and language
 project(
-        demo_rpg
-        VERSION 0.1
-        DESCRIPTION "A Demo RPG using C++"
-        LANGUAGES CXX
+    demo_rpg
+    VERSION 0.1
+    DESCRIPTION "A Demo RPG using C++"
+    LANGUAGES CXX
 )
-
+# require C++20
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
+# ensure -std=c++XX instead of -std=g++xx
 set(CMAKE_CXX_EXTENSIONS OFF)
 
 if (WIN32)
@@ -20,55 +23,20 @@ endif ()
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Werror -Wno-reorder")
 
-add_executable(${PROJECT_NAME}
-        src/headers/character_stats.h
-        src/headers/level_system.h
-        src/headers/player_character_delegate.h
-        src/headers/tests.h
-        src/headers/types.h
-        src/headers/buff.h
-        src/headers/ability.h
-        src/headers/core_stats.h
-        src/headers/player_character.h
-        src/headers/point_stack.h
-        src/headers/item.h
-        src/headers/item_manager.h
-        src/headers/cleric.h
-        src/headers/rogue.h
-        src/headers/warrior.h
-        src/headers/wizard.h
-        src/headers/armor.h
-        src/headers/weapon.h
-        src/headers/potion.h
-        src/main.cpp
-        src/tests.cpp
-        src/item.cpp
-        src/ability.cpp
-        src/armor.cpp
-        src/buff.cpp
-        src/cleric.cpp
-        src/character_stats.cpp
-        src/core_stats.cpp
-        src/item.cpp
-        src/level_system.cpp
-        src/point_stack.cpp
-        src/player_character.cpp
-        src/player_character_delegate.cpp
-        src/potion.cpp
-        src/rogue.cpp
-        src/warrior.cpp
-        src/wizard.cpp
-        src/weapon.cpp
-        src/item_manager.cpp
-)
+# -- create a lib --
+# add src files to var SRC_FILES
+file(GLOB_RECURSE SRC_FILES src/*.cpp)
+# create a demo_rpg_lib from SRC_FILES
+add_library(${PROJECT_NAME}_lib STATIC ${SRC_FILES})
+# include headers files
+include_directories(include/demo_rpg/)
+# add main.cpp as an executable endpoint
+add_executable(${PROJECT_NAME} main.cpp)
+# include the lib to main executable
+target_link_libraries(${PROJECT_NAME} PUBLIC ${PROJECT_NAME}_lib)
+
 
 # ----------- For including tests -----------
-# NOTE: not sure it is correct
-#       all src/*.cpp should be included
-# add_library("${PROJECT_NAME}_lib" main.cpp tests.cpp)
-
-# Path to headers
-# target_include_directories("${PROJECT_NAME}_lib" PUBLIC ${PROJECT_SOURCE_DIR}/src/headers)
-
-# add_subdirectory(tests)
-# enable_testing()
+add_subdirectory(tests)
+add_subdirectory(extern/googletest)
+enable_testing()

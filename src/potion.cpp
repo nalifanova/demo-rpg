@@ -1,4 +1,4 @@
-#include "headers/potion.h"
+#include "potion.h"
 
 Potion::~Potion()
 {

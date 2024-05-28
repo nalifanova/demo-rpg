@@ -23,6 +23,8 @@ struct CoreStats
 
     CoreStats& operator-=(const CoreStats& rhs); // rhs = right hand side
 
+    CoreStats& operator=(const CoreStats& rhs);
+
     stattype strength;
     stattype intellect;
     stattype agility;

@@ -33,6 +33,10 @@ public:
     // setters
     void set_slot(const WeaponSlot* weapon);
 
+    void set_min_damage(damagetype amount);
+
+    void set_max_damage(damagetype amount);
+
     [[nodiscard]] bool is_two_handed() const;
 
 private:

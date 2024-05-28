@@ -1,4 +1,4 @@
-#include "headers/ability.h"
+#include "ability.h"
 
 Ability::Ability(
         std::string name,

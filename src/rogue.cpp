@@ -1,4 +1,4 @@
-#include "headers/rogue.h"
+#include "rogue.h"
 
 Rogue::Rogue(): PlayerCharacterDelegate(
     kBaseHp,

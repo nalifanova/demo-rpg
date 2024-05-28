@@ -1,22 +1,10 @@
-# Add Google Test
-include(FetchContent)
+# store all *.cpp file-paths from tests/ folder to TEST_SOURCES
+file(GLOB_RECURSE TEST_SOURCES *.cpp)
+# add TEST_SOURCES to an executable endpoint
+add_executable(game_tests ${TEST_SOURCES})
+# add a test called game_tests
+add_test(NAME game_tests COMMAND run_tests)
+# include the demo_rpg_lib and gtest to game_tests
+target_link_libraries(game_tests PUBLIC ${CMAKE_PROJECT_NAME}_lib gtest)
 
-FetchContent_Declare(
-    googletest
-    URL https://github.com/google/googletest/archive/refs/tags/release-1.11.0.zip
-)
-
-# To prevent conflicts with Google Test
-set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
-
-FetchContent_MakeAvailable(googletest)
-
-# Make test executable file
-add_executable(run_tests test_1.cpp)
-
-# Add google test and project libs
-target_link_libraries(run_tests gtest_main ) # demo_rpg_lib
-
-# Tests registration
-include(GoogleTest)
-gtest_discover_tests(runTests)
+# message(STATUS "tests/Files are ${TEST_SOURCES}") # TODO: debug
