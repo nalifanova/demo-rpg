@@ -73,6 +73,11 @@ public:
 
     [[nodiscard]] Weapon* get_equipped_weapon_at(int index) const;
 
+    [[nodiscard]] damagetype melee_attack() const noexcept;
+
+    [[nodiscard]] damagetype ranged_attack() const noexcept;
+
+
     // Modifiers
     void gain_exp(exptype points) const;
 

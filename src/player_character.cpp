@@ -1,5 +1,7 @@
 #include "player_character.h"
 
+#include "random.h"
+
 PlayerCharacter::PlayerCharacter(PlayerCharacterDelegate* player)
 :m_player_class(player)
 {
@@ -229,6 +231,49 @@ PlayerCharacter::get_equipped_weapon_at(const int index) const
     if (!m_equipped_weapons[index]) return nullptr;
     return dynamic_cast<Weapon*>(m_equipped_weapons[index]->get_data());
 }
+
+damagetype PlayerCharacter::melee_attack() const noexcept
+{
+    damagetype damage_done = 0; // unarmed
+
+    const Weapon* equipped_weapon = get_equipped_weapon_at(
+        static_cast<damagetype>(WeaponSlot::melee)
+    );
+    if (equipped_weapon)
+    {
+        damage_done = generate_number(
+           equipped_weapon->get_min_damage(),
+           equipped_weapon->get_max_damage()
+       );
+    }
+    // Add super formula to calculate total damage
+    // 1/4 of strength as a bonus of melee damage
+    damage_done += static_cast<damagetype>(
+        static_cast<float>(get_strength()) / 4.f
+    );
+
+    return damage_done;
+}
+
+damagetype PlayerCharacter::ranged_attack() const noexcept
+{
+    const Weapon* equipped_weapon = get_equipped_weapon_at(
+        static_cast<damagetype>(WeaponSlot::ranged)
+    );
+    if (!equipped_weapon) return 0;
+
+    damagetype damage_done = generate_number(
+        equipped_weapon->get_min_damage(),
+        equipped_weapon->get_max_damage()
+    );
+    // 1/4 of agility as a bonus of melee damage
+    damage_done += static_cast<damagetype>(
+        static_cast<float>(get_agility()) / 4.f
+    );
+
+    return damage_done;
+}
+
 
 // Modifiers
 void PlayerCharacter::gain_exp(const exptype points) const
