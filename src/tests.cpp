@@ -2,8 +2,9 @@
 
 #include <vector>
 
-#include "item_manager.h"
 #include "cleric.h"
+#include "item_manager.h"
+#include "random.h"
 #include "rogue.h"
 #include "warrior.h"
 #include "wizard.h"
@@ -309,4 +310,12 @@ void test_inventory()
             std::cout << it->get_data() << ", ";
         std::cout << '\n';
     }
+}
+
+void test_randm()
+{
+    std::cout << generate_number(1, 11) << '\n';
+    std::cout << generate_number(1, 11) << '\n';
+    std::cout << generate_number(1, 11) << '\n';
+    std::cout << generate_number(1, 11) << '\n';
 }

@@ -1,6 +1,9 @@
+#include <iostream>
+
+#include "game_play.h"
 #include "tests.h"
 
-int main()
+void visual_testing()
 {
     test_characters();
     test_level_up();
@@ -9,5 +12,14 @@ int main()
     test_equipment();
     test_potions();
     test_inventory();
-    return 0;
+    test_randm();
+}
+
+
+int main(int argc, char** argv)
+{
+    game_play_();
+    // visual_testing();
+
+    return EXIT_SUCCESS;
 }

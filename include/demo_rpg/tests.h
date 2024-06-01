@@ -27,4 +27,6 @@ void test_potions();
 
 void test_inventory();
 
+void test_randm();
+
 #endif //TESTS_H
