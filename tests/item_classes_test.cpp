@@ -54,7 +54,7 @@ TEST(ItemSuiteTest, WeaponClass)
 TEST(ItemSuiteTest, ArmorClass)
 {
     const Item* armor_item = ItemManager::create_armor(
-        "Gauntlets", CoreStats(2), ArmorSlot::gloves
+        "Gauntlets", CoreStats(2), ArmorSlot::hands
     );
 
     EXPECT_TRUE(armor_item != nullptr);
@@ -70,7 +70,7 @@ TEST(ItemSuiteTest, ArmorClass)
         EXPECT_EQ(armor->get_stats().intellect, 2);
         EXPECT_EQ(armor->get_stats().agility, 2);
         EXPECT_EQ(armor->get_stats().armor, 2);
-        EXPECT_EQ(armor->get_slot(), ArmorSlot::gloves);
+        EXPECT_EQ(armor->get_slot(), ArmorSlot::hands);
         // delete armor; // compiler error
     }
     {
@@ -82,7 +82,7 @@ TEST(ItemSuiteTest, ArmorClass)
         EXPECT_EQ(copied_armor->get_stats().intellect, 2);
         EXPECT_EQ(copied_armor->get_stats().agility, 2);
         EXPECT_EQ(copied_armor->get_stats().armor, 2);
-        EXPECT_EQ(copied_armor->get_slot(), ArmorSlot::gloves);
+        EXPECT_EQ(copied_armor->get_slot(), ArmorSlot::hands);
 
         // change things
         copied_armor->name = "Corrupted Boots";

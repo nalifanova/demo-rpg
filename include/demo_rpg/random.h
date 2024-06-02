@@ -4,6 +4,7 @@
 #include <iostream>
 #include <random>
 
+void init_random_seed();
 /*
  * Function: generate_number
  * Usage: std::uint16_t number = generate_number(low, high);
