@@ -10,7 +10,7 @@ enum class ArmorSlot
 {
     head,
     chest,
-    gloves,
+    hands,
     legs,
     feet,
     ring1,

@@ -23,14 +23,14 @@ inline char the_map[12][13] = // last 0 character
 
 struct Player
 {
-    Player(PlayerCharacterDelegate* char_class): player_character(char_class){}
+    explicit Player(PlayerCharacterDelegate* char_class): character(char_class){}
     Player() = delete;
     [[nodiscard]] bool is_alive() const
     {
-        return player_character.get_current_hp() > 0;
+        return character.get_current_hp() > 0;
     }
 
-    PlayerCharacter player_character;
+    PlayerCharacter character;
     int prev_x = 3;
     int prev_y = 3;
     int x = 3;
@@ -57,5 +57,7 @@ struct Fightable
 };
 
 void game_play_();
+void open_inventory();
+Item* drop_random_item();
 
 #endif //GAME_PLAY_H

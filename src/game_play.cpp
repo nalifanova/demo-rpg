@@ -1,6 +1,7 @@
 #include "game_play.h"
 
 #include <iostream>
+#include <item_manager.h>
 
 #include "cleric.h"
 #include "random.h"
@@ -22,11 +23,11 @@ void create_monster(Fightable* in_out, const Player* base_calc)
         in_out = nullptr;
     }
 
-    const int lowest_hp = base_calc->player_character.get_level() *  2;
-    const int max_hp = base_calc->player_character.get_level() *  8;
+    const int lowest_hp = base_calc->character.get_level() *  2;
+    const int max_hp = base_calc->character.get_level() *  8;
 
-    const int lowest_dmg = base_calc->player_character.get_level();
-    const int max_dmg = base_calc->player_character.get_level() *  2;
+    const int lowest_dmg = base_calc->character.get_level();
+    const int max_dmg = base_calc->character.get_level() *  2;
 
     in_out = new Fightable(
         generate_number(lowest_hp, max_hp),
@@ -49,8 +50,140 @@ void create_monster(Fightable* in_out, const Player* base_calc)
     current_monster = in_out;
 }
 
+void open_inventory()
+{
+    system("clear");
+    auto list_of_items = main_character->character.get_backpack_list();
+
+    std::cout << "Current Inventory:\n------------------\n\n";
+    for (const auto&item: list_of_items)
+        std::cout << "> " << item->get_data()->name << '\n';
+
+    std::cin.ignore(100, '\n');
+    std::cout << "\n\nPress enter to continue\n";
+    // char c = getchar();
+}
+Item* drop_random_item()
+{
+    // 8 armor items, 2 weapon types, 1 potion: 11 different drop types
+    const int drop_seed = generate_number(1, 100);
+    if (drop_seed < 6)
+    {
+        std::string name;
+        CoreStats local_stats;
+
+        int magical_power = generate_number(0, 2);
+
+        switch(magical_power)
+        {
+        case 0:
+            name = "Helmet";
+            local_stats = CoreStats(0, 0, 0, 1, 0);
+            break;
+        case 1:
+            name = "+1 Helmet";
+            local_stats = CoreStats(1, 1, 1, 2, 1);
+            break;
+        case 2:
+            name = "+2 Helmet";
+            local_stats = CoreStats(2, 2, 2, 3, 2);
+            break;
+        default:
+            break;
+        }
+        return ItemManager::create_armor(name, local_stats, ArmorSlot::head);
+    }
+    if (drop_seed < 12)
+    {
+        return ItemManager::create_armor(
+            "Cyrasa",
+            CoreStats(0, 0, 0, 1, 0),
+            ArmorSlot::chest
+        );
+    }
+    if (drop_seed < 18)
+    {
+        return ItemManager::create_armor(
+            "Leg Guards",
+            CoreStats(0, 0, 0, 1, 0),
+            ArmorSlot::legs
+        );
+    }
+    if (drop_seed < 24)
+    {
+        return ItemManager::create_armor(
+            "Boots",
+            CoreStats(0, 0, 0, 1, 0),
+            ArmorSlot::feet
+        );
+    }
+    if (drop_seed < 30)
+    {
+        return ItemManager::create_armor(
+            "Gloves",
+            CoreStats(0, 0, 0, 1, 0),
+            ArmorSlot::hands
+        );
+    }
+    if (drop_seed < 36)
+    {
+        return ItemManager::create_armor(
+            "Ring1",
+            CoreStats(1, 1, 1, 0, 0),
+            ArmorSlot::ring1
+        );
+    }
+    if (drop_seed < 42)
+    {
+        return ItemManager::create_armor(
+            "Ring2",
+            CoreStats(1, 1, 1, 0, 0),
+            ArmorSlot::ring2
+        );
+    }
+    if (drop_seed < 48)
+    {
+        return ItemManager::create_armor(
+            "Necklace",
+            CoreStats(0, 1, 0, 1, 1),
+            ArmorSlot::neck
+        );
+    }
+    if (drop_seed < 54)
+    {
+        return ItemManager::create_weapon(
+            "1H Sword",
+            CoreStats(0),
+            WeaponSlot::melee,
+            2,
+            3
+        );
+    }
+    if (drop_seed < 60)
+    {
+        return ItemManager::create_weapon(
+            "Bow",
+            CoreStats(0),
+            WeaponSlot::ranged,
+            2,
+            3,
+            true
+        );
+    }
+    if (drop_seed < 90)
+    {
+        return ItemManager::create_potion(
+            "Healing potion",
+            generate_number(2, 5),
+            generate_number(1, 2)
+        );
+    }
+    return nullptr;
+}
+
+
 // returns true on win, false otherwise
-void enter_fight_sequence(const Player& player)
+void enter_fight_sequence(Player& player)
 {
     if (!current_monster) return;
 
@@ -60,8 +193,8 @@ void enter_fight_sequence(const Player& player)
 
         // display fight interface
         std::cout << "Player        vs          Monster\n" <<
-        "hp: " << player.player_character.get_current_hp() << '/' <<
-        player.player_character.get_max_hp() << "               hp: " <<
+        "hp: " << player.character.get_current_hp() << '/' <<
+        player.character.get_max_hp() << "               hp: " <<
         current_monster->monster.hp.get_current() << '/' <<
         current_monster->monster.hp.get_initial() << '\n' <<
         "action(a: attack): ";
@@ -70,11 +203,11 @@ void enter_fight_sequence(const Player& player)
         while (action != 'a') action = getchar();
 
         current_monster->monster.hp.reduce(
-            player.player_character.melee_attack()
+            player.character.melee_attack()
         );
 
         if (current_monster->is_alive())
-            player.player_character.take_damage(
+            player.character.take_damage(
                 current_monster->monster.attack()
             );
     }
@@ -83,8 +216,16 @@ void enter_fight_sequence(const Player& player)
     {
         std::cout << "You won vs the Monster!\n";
         std::cout << "xp gained: " << current_monster->xp_worth << '\n';
+        player.character.gain_exp(current_monster->xp_worth);
 
-        player.player_character.gain_exp(current_monster->xp_worth);
+        // drop a random item
+        if (Item* item_drop = drop_random_item())
+        {
+            ItemManager::move_to_backpack(item_drop, &player.character);
+            std::cout << "item received: " <<
+            item_drop->get_data()->name << '\n';
+        }
+
         monsters_defeated++;
         create_monster(current_monster, &player);
     }
@@ -170,7 +311,7 @@ void game_play_()
 
     for (;;)
     {
-        std::cout << "\nmove(wasd): \n";
+        std::cout << "\nmove(wasd), inventory(i): \n";
 
         switch(char c = getchar())
         {
@@ -185,6 +326,9 @@ void game_play_()
             break;
         case 'd':
             main_character->y++;
+            break;
+        case 'i':
+            open_inventory();
             break;
         default:
             break;

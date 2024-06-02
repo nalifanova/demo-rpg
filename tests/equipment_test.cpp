@@ -50,7 +50,7 @@ TEST(EquipPlaterSuiteTest, ItemManagerClass)
     ASSERT_NE(rogue.get_equipped_armor_at(static_cast<int>(ArmorSlot::chest)), nullptr);
     ASSERT_NE(rogue.get_equipped_armor_at(static_cast<int>(ArmorSlot::legs)), nullptr);
     ASSERT_NE(rogue.get_equipped_armor_at(static_cast<int>(ArmorSlot::ring1)), nullptr);
-    ASSERT_EQ(rogue.get_equipped_armor_at(static_cast<int>(ArmorSlot::gloves)), nullptr);
+    ASSERT_EQ(rogue.get_equipped_armor_at(static_cast<int>(ArmorSlot::hands)), nullptr);
     ASSERT_EQ(rogue.get_equipped_armor_at(static_cast<int>(ArmorSlot::neck)), nullptr);
     ASSERT_EQ(rogue.get_equipped_armor_at(static_cast<int>(ArmorSlot::ring2)), nullptr);
 
