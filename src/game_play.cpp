@@ -61,7 +61,8 @@ void open_inventory()
 
     std::cin.ignore(100, '\n');
     std::cout << "\n\nPress enter to continue\n";
-    // char c = getchar();
+    // char c = getchar(); // TODO: think, do we really need it?
+    std::cin.get(); // for macos
 }
 Item* drop_random_item()
 {
