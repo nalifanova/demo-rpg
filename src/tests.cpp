@@ -57,18 +57,19 @@ void test_characters()
 {
     separator(__func__, __LINE__);
 
-    const auto warrior = PlayerCharacter(new Warrior());
-    const PlayerCharacter wizard(new Wizard());
-    const PlayerCharacter cleric(new Cleric());
-    const PlayerCharacter rogue(new Rogue());
+    auto warrior = PlayerCharacter(new Warrior());
+    auto wizard = PlayerCharacter(new Wizard());
+    auto cleric = PlayerCharacter(new Cleric());
+    auto rogue = PlayerCharacter(new Rogue());
+    // PlayerCharacter rogue(new Rogue()); - gives an error
 
-    const std::vector<PlayerCharacter> characters = {
-        warrior, wizard, cleric, rogue
+    const std::vector<PlayerCharacter*> characters = {
+        &warrior, &wizard, &cleric, &rogue
     };
 
-    for (const auto& char_: characters)
+    for (const auto char_: characters)
     {
-        show_stats(char_);
+        show_stats(*char_);
         std::cout << '\n';
     }
 }

@@ -1,9 +1,9 @@
 #include "game_play.h"
 
 #include <iostream>
-#include <item_manager.h>
 
 #include "cleric.h"
+#include "item_manager.h"
 #include "random.h"
 #include "rogue.h"
 #include "warrior.h"
@@ -12,6 +12,21 @@
 Player* main_character = nullptr;
 Fightable* current_monster = nullptr;
 int monsters_defeated = 0;
+
+int get_scale_value(const AbilityScaler scaler)
+{
+    switch(scaler)
+    {
+    case AbilityScaler::strength:
+        return static_cast<int>(main_character->character.get_strength() / 2.f);
+    case AbilityScaler::intellect:
+        return static_cast<int>(main_character->character.get_intellect() / 2.f);
+    case AbilityScaler::agility:
+        return static_cast<int>(main_character->character.get_agility() / 2.f);
+    default:
+        return 0;
+    }
+}
 
 void create_monster(Fightable* in_out, const Player* base_calc)
 {
@@ -50,20 +65,196 @@ void create_monster(Fightable* in_out, const Player* base_calc)
     current_monster = in_out;
 }
 
-void open_inventory()
+bool open_inventory(const bool in_combat)
+{
+    bool done = false;
+    bool action_used = false;
+    int selected_item_num = 0;
+
+    while(!done)
+    {
+        system("clear");
+        auto list_of_items = main_character->character.get_backpack_list();
+
+        std::cout << "Current Inventory:\n------------------\n\n";
+        int items_in_backpack_count = 0;
+        for (const auto&item: list_of_items)
+        {
+            if (selected_item_num == items_in_backpack_count) std::cout << "> ";
+            else std::cout << " ";
+            std::cout << item->get_data()->name << '\n';
+
+            if (ItemManager::is_item_potion(item))
+            {
+                Potion* potion = nullptr;
+                ItemManager::cast_item_to_potion(item, potion);
+                if (potion)
+                    std::cout << "    Quantity: " << potion->quantity << "\n";
+                items_in_backpack_count++;
+            }
+        }
+
+        std::cin.ignore(100, '\n');
+        std::cout << "\nd=done, w=up, s=down, u=use/equip current\n";
+        // std::cin.get(); // for macos
+
+        switch (char c = getchar())
+        {
+        case 'd':
+            done = true;
+            break;
+        case 'w':
+            selected_item_num--;
+            if (selected_item_num < 0) selected_item_num = 0;
+            break;
+        case 's':
+            selected_item_num++;
+            if (selected_item_num > list_of_items.size() - 1)
+                selected_item_num = static_cast<int>(list_of_items.size()) - 1;
+            break;
+        case 'u':
+            if (list_of_items.empty()) continue;
+            if (ItemManager::is_item_potion(list_of_items[selected_item_num]))
+                action_used = ItemManager::use(
+                    list_of_items[selected_item_num],
+                    &(main_character->character)
+                );
+            else
+                action_used = ItemManager::equip(
+                    list_of_items[selected_item_num],
+                    &(main_character->character)
+                );
+            break;
+        default:
+            break;
+        }
+        if (in_combat) // TODO: let's see if it works
+            if (action_used) break;
+    }
+    return action_used;
+}
+
+bool combat_ability_selection()
+{
+    bool ability_done = false;
+    bool action_used = false;
+    int selected_ability = 0;
+
+    while (!ability_done)
+    {
+        auto current_abilities = main_character->character.get_ability_list();
+        system("clear");
+        std::cout << "Current Abilities\n";
+
+        int abilities_in_list_count = 0;
+        for (const auto& abil: current_abilities)
+        {
+            std::cout << ((selected_ability == abilities_in_list_count) ? "> " : " ");
+            std::cout << abil.name << '\n';
+            // TODO: cooldowns and mp
+            abilities_in_list_count++;
+        }
+
+        std::cin.ignore(100, '\n');
+        std::cout << "\nd=done, w=up, s=down, u=use\n";
+        switch(char c = getchar())
+        {
+        case 'd':
+            ability_done = true;
+            break;
+        case 'w':
+            selected_ability--;
+            if (selected_ability < 0) selected_ability = 0;
+            break;
+        case 's':
+            selected_ability++;
+            if (selected_ability > current_abilities.size() - 1)
+                selected_ability = static_cast<int>(current_abilities.size()) - 1;
+            break;
+        case 'u':
+            {
+                int total = 0;
+                total += current_abilities[selected_ability].hp_effect;
+                total+= get_scale_value(current_abilities[selected_ability].scaler);
+
+                if (current_abilities[selected_ability].target == AbilityTarget::enemy)
+                    current_monster->monster.hp.reduce(total);
+                else
+                    main_character->character.heal(total);
+
+                action_used = true;
+            }
+            break;
+        default:
+            break;
+        }
+        if (action_used) break;
+    }
+    return action_used;
+}
+
+void display_charachter_sheet()
 {
     system("clear");
-    auto list_of_items = main_character->character.get_backpack_list();
+    std::cout << "Character list:\n";
+    std::cout << "---- :) ----\n";
 
-    std::cout << "Current Inventory:\n------------------\n\n";
-    for (const auto&item: list_of_items)
-        std::cout << "> " << item->get_data()->name << '\n';
+    system("clear");
+    std::cout
+    << "Your Character\n" << "L: " <<
+    main_character->character.get_level() << " XP: " <<
+    main_character->character.get_current_exp() << " NEXT: " <<
+    main_character->character.get_exp_to_next_level() << '\n' <<
 
+    "Hit Points: " << main_character->character.get_current_hp() << "/" <<
+    main_character->character.get_max_hp() << '\n' <<
+    "Armor: " << main_character->character.get_armor() <<
+    "  Resistance: " << main_character->character.get_resistance() << '\n' <<
+    "STR: " << main_character->character.get_strength() <<
+    " AGI: " << main_character->character.get_agility() <<
+    " INT: " << main_character->character.get_intellect() << '\n'
+    << "\n\nEquipped Gear\n";
+
+    if (Weapon* p_weapon = main_character->character.get_equipped_weapon_at(static_cast<int>(WeaponSlot::melee))) {
+    std::string weapon_name = p_weapon->name;
+    std::cout << "MELEE: " << weapon_name << "  damage(" << p_weapon->get_min_damage() << '-' <<
+        p_weapon->get_max_damage() << ")\n";
+    }
+    if (Weapon* p_weapon = main_character->character.get_equipped_weapon_at(static_cast<int>(WeaponSlot::ranged))) {
+    std::string weapon_name = p_weapon->name;
+    std::cout << "RANGED: " << weapon_name << "  damage(" << p_weapon->get_min_damage() << '-' <<
+        p_weapon->get_max_damage() << ")\n";
+    }
+    if (Armor* p_armor = main_character->character.get_equipped_armor_at(static_cast<int>(ArmorSlot::head))) {
+        std::cout << "HEAD: " << p_armor->name << '\n';
+    }
+    if (Armor* p_armor = main_character->character.get_equipped_armor_at(static_cast<int>(ArmorSlot::neck))) {
+        std::cout << "NECK: " << p_armor->name << '\n';
+    }
+    if (Armor* p_armor = main_character->character.get_equipped_armor_at(static_cast<int>(ArmorSlot::chest))) {
+        std::cout << "CHEST: " << p_armor->name << '\n';
+    }
+    if (Armor* p_armor = main_character->character.get_equipped_armor_at(static_cast<int>(ArmorSlot::hands))) {
+        std::cout << "HANDS: " << p_armor->name << '\n';
+    }
+    if (Armor* p_armor = main_character->character.get_equipped_armor_at(static_cast<int>(ArmorSlot::ring1))) {
+        std::cout << "RING1: " << p_armor->name << '\n';
+    }
+    if (Armor* p_armor = main_character->character.get_equipped_armor_at(static_cast<int>(ArmorSlot::ring2))) {
+        std::cout << "RING2: " << p_armor->name << '\n';
+    }
+    if (Armor* p_armor = main_character->character.get_equipped_armor_at(static_cast<int>(ArmorSlot::legs))) {
+        std::cout << "LESG: " << p_armor->name << '\n';
+    }
+    if (Armor* p_armor = main_character->character.get_equipped_armor_at(static_cast<int>(ArmorSlot::feet))) {
+        std::cout << "FEET: " << p_armor->name << '\n';
+    }
+    
     std::cin.ignore(100, '\n');
-    std::cout << "\n\nPress enter to continue\n";
-    // char c = getchar(); // TODO: think, do we really need it?
-    std::cin.get(); // for macos
+    std::cout << "\npress enter to continue...\n";
+    std::cin.get();
 }
+
 Item* drop_random_item()
 {
     // 8 armor items, 2 weapon types, 1 potion: 11 different drop types
@@ -182,35 +373,63 @@ Item* drop_random_item()
     return nullptr;
 }
 
-
 // returns true on win, false otherwise
-void enter_fight_sequence(Player& player)
+void fight_sequence(Player& player)
 {
     if (!current_monster) return;
 
+    // options available per turn
+    enum class FightOptions {none, attack, inventory, ability};
     while(player.is_alive() && current_monster->is_alive())
     {
-        system("clear"); // linux/macos
+        auto action_taken = FightOptions::none;
+        char action = '\0';
 
-        // display fight interface
-        std::cout << "Player        vs          Monster\n" <<
-        "hp: " << player.character.get_current_hp() << '/' <<
-        player.character.get_max_hp() << "               hp: " <<
-        current_monster->monster.hp.get_current() << '/' <<
-        current_monster->monster.hp.get_initial() << '\n' <<
-        "action(a: attack): ";
+        while (action_taken == FightOptions::none)
+        {
+            system("clear"); // linux/macos
+            // display fight interface
+            std::cout << "Player        vs          Monster\n" <<
+            "hp: " << player.character.get_current_hp() << '/' <<
+            player.character.get_max_hp() << "               hp: " <<
+            current_monster->monster.hp.get_current() << '/' <<
+            current_monster->monster.hp.get_initial() << '\n' <<
+            "action(a:attack, i:inventory, b:abilities): ";
 
-        char action = '1';
-        while (action != 'a') action = getchar();
+            action = getchar();
 
-        current_monster->monster.hp.reduce(
-            player.character.melee_attack()
-        );
-
+            switch (action)
+            {
+            case 'a':
+                action_taken = FightOptions::attack;
+                current_monster->monster.hp.reduce(
+                    player.character.melee_attack()
+                );
+                break;
+            case 'i':
+                action_taken = (open_inventory(true)) ?
+                    FightOptions::inventory : FightOptions::none;
+                break;
+            case 'b':
+                action_taken = (combat_ability_selection()) ?
+                    FightOptions::ability : FightOptions::none;
+                break;
+            default:
+                break;
+            }
+        }
+        // monster hits when the player's turn is over
         if (current_monster->is_alive())
-            player.character.take_damage(
-                current_monster->monster.attack()
-            );
+        {
+            // monster attack every turn and min dmg exists despite of player's
+            // armor - weird, huh?
+            int damage_player_takes = current_monster->monster.attack();
+            damage_player_takes -= player.character.get_armor();
+
+            if (damage_player_takes < 1) damage_player_takes = 1;
+
+            player.character.take_damage(damage_player_takes);
+        }
     }
 
     if (player.is_alive())
@@ -242,7 +461,7 @@ void move_player_on_map(Player& player)
 {
     if (player.x == player.prev_x && player.y == player.prev_y) return;
 
-    if (the_map[player.x][player.y] == 'M') enter_fight_sequence(player);
+    if (the_map[player.x][player.y] == 'M') fight_sequence(player);
 
     // check that the player hasn't moved into a wall
     if (the_map[player.x][player.y] != 'X')
@@ -273,8 +492,9 @@ void show_map()
     }
 }
 
-void game_play_()
+void run_game()
 {
+    system("clear");
     std::cout << "Choose a class: \n" <<
     "1 = Cleric     2 = Warrior     3 = Rogue       4 = Wizard\n";
     int choice = 0;
@@ -303,6 +523,10 @@ void game_play_()
         return; // failed to make a player character
     }
 
+    // Get 2 random items to the backpack
+    ItemManager::move_to_backpack(drop_random_item(), &main_character->character);
+    ItemManager::move_to_backpack(drop_random_item(), &main_character->character);
+
     create_monster(current_monster, main_character);
 
     the_map[main_character->x][main_character->y] = 'P';
@@ -329,7 +553,13 @@ void game_play_()
             main_character->y++;
             break;
         case 'i':
-            open_inventory();
+            open_inventory(false);
+            break;
+        case 'c':
+            display_charachter_sheet();
+            break;
+        case 'q':
+            main_character->character.cleanup_backpack();
             break;
         default:
             break;

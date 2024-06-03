@@ -89,17 +89,22 @@ bool ItemManager::equip(Item* item_to_equip, PlayerCharacter* p_player)
     if (!p_player || !item_to_equip || !item_to_equip->get_data())
         return false;
 
+    if (is_item_potion(item_to_equip)) return false;
+
     if (const auto* armor = dynamic_cast<Armor*>(item_to_equip->get_data()))
     {
         const auto slot_num = static_cast<int>(armor->get_slot());
         if (p_player->m_equipped_armors[slot_num])
         {
+            p_player->m_equipped_armors[slot_num]->remove_as_backback_ref_gone();
             move_to_backpack(
                 p_player->m_equipped_armors[slot_num],
                 p_player
             );
         }
         p_player->m_equipped_armors[slot_num] = item_to_equip;
+        item_to_equip->mark_as_backback_ref_gone();
+        p_player->cleanup_backpack();
         return true;
     }
 
@@ -108,14 +113,15 @@ bool ItemManager::equip(Item* item_to_equip, PlayerCharacter* p_player)
         const auto slot_num = static_cast<unsigned int>(weapon->get_slot());
         if (p_player->m_equipped_weapons[slot_num])
         {
+            p_player->m_equipped_weapons[slot_num]->remove_as_backback_ref_gone();
             move_to_backpack(
                 p_player->m_equipped_weapons[slot_num],
                 p_player
             );
-            p_player->m_equipped_weapons[slot_num] = nullptr;
         }
         p_player->m_equipped_weapons[slot_num] = item_to_equip;
-
+        item_to_equip->mark_as_backback_ref_gone();
+        p_player->cleanup_backpack();
         return true;
     }
     // if item fails to equip, move it to the backback
@@ -128,21 +134,29 @@ bool ItemManager::use(const Item* item_to_use, PlayerCharacter* p_player)
     if (!p_player || !item_to_use || !item_to_use->get_data())
         return false;
 
-    if (auto* potion = dynamic_cast<Potion*>(item_to_use->get_data()))
+    Potion* potion = nullptr;
+    cast_item_to_potion(item_to_use, potion);
+
+    if (potion && potion->quantity > 0)
     {
         // apply buff if it has one
         if (potion->buff)
+        {
+            if (potion->buff->is_debuff)
+                p_player->take_damage(potion->heal_amount);
+
             p_player->apply_buff(*potion->buff);
+        }
+        else
+        {
+            // healing potion only, no buff/debuff, only use if not already
+            // max health
+            if (p_player->is_max_hp()) return false;
+            p_player->heal(potion->heal_amount);
+        }
 
-        // if max health and trying to use a heal potion, don't use it
-        if (p_player->m_player_class->hp->is_full() && !potion->buff)
-            return false; // don't use the potion
-
-        // increase hp by the heal amount (could be 0 and that's fine)
-        p_player->m_player_class->hp->increase(potion->heal_amount);
         // we used the potion, reduce quantity
         potion->quantity--;
-
         if (potion->quantity == 0)
         {
             item_to_use->mark_for_deletion();

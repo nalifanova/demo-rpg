@@ -11,15 +11,6 @@
 class PlayerCharacter final
 {
 public:
-    PlayerCharacter() = delete;
-
-    /* error: call to implicitly-deleted copy constructor of
-     * 'const PlayerCharacter' (src/tests.cpp:55:9: ... warrior, wizard..)
-     * TODO: find a reason why?
-     */
-    // PlayerCharacter(const PlayerCharacter&) = delete; // no copy
-    // PlayerCharacter(const PlayerCharacter&&) = delete; // no move
-
     explicit PlayerCharacter(PlayerCharacterDelegate* player);
 
     ~PlayerCharacter();
@@ -42,6 +33,8 @@ public:
     [[nodiscard]] pointtype get_current_mp() const;
 
     [[nodiscard]] pointtype get_max_mp() const;
+
+    [[nodiscard]] bool is_max_hp() const;
 
     [[nodiscard]] stattype get_strength() const;
 
@@ -92,6 +85,13 @@ public:
     void cleanup_backpack();
 
 private:
+    // deleted constructors
+    PlayerCharacter() = delete;
+
+    PlayerCharacter(const PlayerCharacter&) = delete; // no copy
+
+    PlayerCharacter(const PlayerCharacter&&) = delete; // no move
+
     PlayerCharacterDelegate* m_player_class;
     // std::unique_ptr<PlayerCharacterDelegate> m_player_class;
     Item* m_equipped_armors[static_cast<unsigned int>(ArmorSlot::num_slots)];

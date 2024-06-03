@@ -56,8 +56,14 @@ struct Fightable
     int xp_worth;
 };
 
-void game_play_();
-void open_inventory();
+void create_monster(Fightable* in_out, const Player* base_calc);
 Item* drop_random_item();
+bool open_inventory(bool in_combat = false);
+bool combat_ability_selection();
+void fight_sequence(Player& player);
+void move_player_on_map(Player& player);
+void show_map();
+void run_game();
+void display_charachter_sheet();
 
 #endif //GAME_PLAY_H

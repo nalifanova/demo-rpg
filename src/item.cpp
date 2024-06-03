@@ -27,7 +27,27 @@ unique_id(++equip_iterator) {}
     return m_marked_for_deletion;
 }
 
+[[nodiscard]] bool Item::get_marked_as_backback_ref_gone() const
+{
+    return m_marked_as_backback_ref_gone;
+}
+
 void Item::mark_for_deletion() const
 {
     m_marked_for_deletion = true;
+}
+
+void Item::mark_as_backback_ref_gone() const
+{
+    m_marked_as_backback_ref_gone = true;
+}
+
+void Item::remove_for_deletion() const
+{
+    m_marked_for_deletion = false;
+}
+
+void Item::remove_as_backback_ref_gone() const
+{
+    m_marked_as_backback_ref_gone = false;
 }

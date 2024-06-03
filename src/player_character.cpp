@@ -15,9 +15,7 @@ PlayerCharacter::PlayerCharacter(PlayerCharacterDelegate* player)
 
 PlayerCharacter::~PlayerCharacter()
 {
-    // deletion of m_player_class leads to
-    // memory violation issue - 139 (interrupted by signal 11:SIGSEGV)
-    // delete m_player_class;
+    delete m_player_class;
     m_player_class = nullptr;
     for (auto & equipped_armor : m_equipped_armors)
     {
@@ -79,6 +77,12 @@ PlayerCharacter::~PlayerCharacter()
     if (m_player_class->mp)
         return m_player_class->mp->get_current();
     return 0;
+}
+
+[[nodiscard]] bool PlayerCharacter::is_max_hp() const
+{
+    return m_player_class->hp->get_initial() ==
+           m_player_class->hp->get_current();
 }
 
 [[nodiscard]] pointtype PlayerCharacter::get_max_mp() const
@@ -317,4 +321,15 @@ void PlayerCharacter::cleanup_backpack()
         [](const Item* item) {delete item;}
     );
     m_backpack.erase(to_remove, m_backpack.end());
+
+    // updated
+    const auto to_remove_ref = std::stable_partition(
+        m_backpack.begin(),
+        m_backpack.end(),
+        [](const Item* item) -> bool
+        {
+            return !item->get_marked_as_backback_ref_gone();
+        } // this is a lambda function
+    );
+    m_backpack.erase(to_remove_ref, m_backpack.end());
 }

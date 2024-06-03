@@ -18,7 +18,7 @@ void visual_testing()
 
 int main(int argc, char** argv)
 {
-    game_play_();
+    run_game();
     // visual_testing();
 
     return EXIT_SUCCESS;

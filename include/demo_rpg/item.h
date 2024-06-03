@@ -14,6 +14,7 @@ public:
 protected:
     // for some reason virtual is protected
     virtual ~ItemDelegate() = default;
+
     explicit ItemDelegate(std::string name): name(std::move(name)) {}
 
     friend class Item;
@@ -43,7 +44,15 @@ public:
 
     [[nodiscard]] bool get_marked_for_deletion() const;
 
+    [[nodiscard]] bool get_marked_as_backback_ref_gone() const;
+
     void mark_for_deletion() const;
+
+    void mark_as_backback_ref_gone() const;
+
+    void remove_for_deletion() const;
+
+    void remove_as_backback_ref_gone() const;
 
 private:
     explicit Item(ItemDelegate* item): m_data(item) {}
@@ -60,6 +69,7 @@ private:
     friend class ItemManager;
     ItemDelegate* m_data = nullptr;
     mutable bool m_marked_for_deletion = false;
+    mutable bool m_marked_as_backback_ref_gone = false;
 
     friend class ItemManager;
     friend class PlayerCharacter;
